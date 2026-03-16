@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>植物星球</title>
+<title>植物星球 · Plant Planet</title>
 <style>
 :root{
   --space:#0A1628; --space2:#0D2137; --space3:#132840;
@@ -56,11 +56,11 @@ select.inf option{background:var(--space);color:white}
 
 /* ── NAV ── */
 .nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--space);border-top:1px solid rgba(255,255,255,.08);display:flex;height:calc(var(--nav-h) + env(safe-area-inset-bottom, 16px));padding-bottom:env(safe-area-inset-bottom, 16px);z-index:200}
-.nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:none;cursor:pointer;font-family:inherit;color:rgba(255,255,255,.35);font-size:10px;padding-top:8px;transition:color .2s}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;cursor:pointer;font-family:inherit;color:rgba(255,255,255,.35);font-size:9px;padding-top:8px;transition:color .2s}
 .nb.on{color:var(--gold)}
 .nb.on .ni-wrap{background:rgba(212,168,67,.15);border-radius:12px}
-.ni-wrap{padding:4px 16px;border-radius:12px;transition:background .2s}
-.ni{font-size:22px;line-height:1;display:block}
+.ni-wrap{padding:3px 10px;border-radius:10px;transition:background .2s}
+.ni{font-size:20px;line-height:1;display:block}
 
 /* ── HOME SCREEN ── */
 .home-hdr{background:linear-gradient(160deg,var(--space) 0%,var(--space2) 60%,var(--space3) 100%);padding:calc(var(--st)+14px) 20px 20px;position:sticky;top:0;z-index:100;overflow:hidden}
@@ -77,7 +77,10 @@ select.inf option{background:var(--space);color:white}
 .hdr-stat-lbl{font-size:10px;color:rgba(255,255,255,.45);margin-top:2px}
 
 /* ── PLANET SECTION ── */
-.planet-section{background:linear-gradient(180deg,var(--space3) 0%,var(--bg) 100%);padding:24px 20px;text-align:center;position:relative}
+.planet-section{background:linear-gradient(180deg,var(--space3) 0%,var(--space2) 40%,var(--bg) 100%);padding:24px 20px;text-align:center;position:relative;overflow:hidden}
+.planet-stars{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.p-star{position:absolute;border-radius:50%;background:white;animation:ptwinkle 1.5s ease-in-out infinite}
+@keyframes ptwinkle{0%,100%{opacity:.1;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}
 .planet-wrap{position:relative;display:inline-block;margin:0 auto}
 .planet-label{font-size:12px;color:rgba(255,255,255,.5);margin-bottom:8px;letter-spacing:2px;text-transform:uppercase}
 .week-progress{margin-top:16px}
@@ -239,7 +242,24 @@ select.inf option{background:var(--space);color:white}
 .inf-d:focus{outline:none;border-color:var(--green)}
 .inf-d::placeholder{color:var(--t3)}
 
+/* ── PLANTING ── */
+.plant-shop-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:4px 0}
+.plant-shop-item{background:white;border-radius:16px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.06);cursor:pointer;transition:transform .15s,box-shadow .15s;position:relative;border:1.5px solid transparent}
+.plant-shop-item:active{transform:scale(.96)}
+.plant-shop-item.owned{border-color:var(--green3)}
+.plant-shop-item.featured{border-color:var(--gold)}
+.psi-emoji{font-size:40px;margin-bottom:8px;line-height:1;display:block}
+.psi-name{font-size:14px;font-weight:700;color:var(--t1);margin-bottom:4px}
+.psi-desc{font-size:11px;color:var(--t3);line-height:1.4;margin-bottom:8px}
+.psi-cost{display:inline-flex;align-items:center;gap:4px;background:rgba(212,168,67,.12);border-radius:20px;padding:4px 10px;font-size:12px;font-weight:800;color:var(--gold3)}
+.psi-owned{display:inline-flex;align-items:center;gap:4px;background:rgba(27,67,50,.1);border-radius:20px;padding:4px 10px;font-size:12px;font-weight:700;color:var(--green)}
+.planet-garden{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:12px 0}
+.garden-item{font-size:28px;line-height:1;animation:floatIn .5s ease}
+@keyframes floatIn{from{transform:scale(0) translateY(20px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.plant-progress{background:rgba(255,255,255,.08);border-radius:12px;padding:14px;margin:12px 0;text-align:center}
 /* ── LEADERBOARD ── */
+.lb-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.lb-item:last-child{border-bottom:none}
 .lb-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
 .lb-item:last-child{border-bottom:none}
 .lb-rank{font-size:20px;font-weight:800;min-width:32px;text-align:center}
@@ -258,6 +278,17 @@ select.inf option{background:var(--space);color:white}
 .share-btn-row{display:flex;gap:8px;margin-top:14px}
 .share-btn{flex:1;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:12px;font-size:13px;font-weight:700;color:white;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:background .15s}
 .share-btn:active{background:rgba(255,255,255,.25)}
+/* ── PLANT MODAL ── */
+.plant-confirm-box{background:white;border-radius:24px 24px 0 0;width:100%;max-width:430px;max-height:90dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 20px calc(24px + var(--sb));animation:slideUp .25s ease}
+.plant-confirm-header{background:linear-gradient(160deg,var(--space),var(--space3));border-radius:16px;padding:24px;text-align:center;color:white;margin-bottom:16px}
+.pch-emoji{font-size:64px;line-height:1;display:block;margin-bottom:12px;filter:drop-shadow(0 0 16px rgba(212,168,67,.4))}
+.pch-name{font-size:20px;font-weight:800;margin-bottom:6px;color:var(--gold)}
+.pch-desc{font-size:14px;opacity:.7;line-height:1.5}
+.pch-stats{display:flex;gap:10px;margin-top:14px}
+.pch-stat{flex:1;background:rgba(255,255,255,.1);border-radius:10px;padding:10px;text-align:center}
+.pch-stat-val{font-size:18px;font-weight:800;color:var(--gold2)}
+.pch-stat-lbl{font-size:10px;opacity:.6;margin-top:2px}
+.planet-mini-preview{width:120px;height:120px;margin:12px auto;display:block}
 </style>
 </head>
 <body>
@@ -265,7 +296,7 @@ select.inf option{background:var(--space);color:white}
 <!-- ONBOARDING -->
 <div id="ob">
   <div class="ob-stars" id="ob-stars"></div>
-  <div class="ob-logo">植物星球 · Flora Planet</div>
+  <div class="ob-logo">植物星球 · Plant Planet</div>
 
   <div id="ob1">
     <div class="dots"><div class="dot on"></div><div class="dot"></div><div class="dot"></div></div>
@@ -279,7 +310,7 @@ select.inf option{background:var(--space);color:white}
       </svg>
     </div>
     <div class="ob-title">探索你的<br><span>植物星球</span></div>
-    <div class="ob-sub">每周吃30种不同植物，你的星球就会慢慢变绿、变茂盛。科学证明，植物多样性是肠道健康和抗炎的关键。</div>
+    <div class="ob-sub">每周吃30种不同植物，我的星球就会慢慢变绿、变茂盛。科学证明，植物多样性是肠道健康和抗炎的关键。</div>
     <div class="ig"><label class="il">你的名字</label><input class="inf" id="o-name" placeholder="如：Luna" type="text"></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
       <div class="ig"><label class="il">年龄</label><input class="inf" id="o-age" placeholder="岁" type="number" min="10" max="100"></div>
@@ -291,7 +322,7 @@ select.inf option{background:var(--space);color:white}
   <div id="ob2" style="display:none">
     <div class="dots"><div class="dot"></div><div class="dot on"></div><div class="dot"></div></div>
     <div class="ob-title">你的<span>守护精灵</span></div>
-    <div class="ob-sub">你的星球守护精灵会随着你吃的植物种类增加而成长进化。你吃得越多样，精灵越强大！<br><br>无需任何账号或付费，完全免费使用。</div>
+    <div class="ob-sub">我的星球守护精灵会随着你吃的植物种类增加而成长进化。你吃得越多样，精灵越强大！<br><br>无需任何账号或付费，完全免费使用。</div>
     <div style="background:rgba(255,255,255,.08);border-radius:16px;padding:20px;text-align:center;margin-bottom:24px">
       <div style="font-size:72px;margin-bottom:10px;animation:bounce 2s ease-in-out infinite">🌱</div>
       <div style="font-size:16px;font-weight:700;color:var(--gold)">种子精灵</div>
@@ -361,7 +392,8 @@ select.inf option{background:var(--space);color:white}
 
     <!-- Planet -->
     <div class="planet-section">
-      <div class="planet-label">你的星球</div>
+      <div class="planet-stars" id="planet-bg-stars"></div>
+      <div class="planet-label">我的星球</div>
       <div class="planet-wrap">
         <svg id="planet-svg" width="160" height="160" viewBox="0 0 160 160">
           <defs>
@@ -436,7 +468,7 @@ select.inf option{background:var(--space);color:white}
     <div class="home-hdr" style="padding-bottom:16px">
       <div class="hdr-stars" id="log-stars"></div>
       <div style="font-size:22px;font-weight:800;color:white">打卡记录</div>
-      <div style="font-size:12px;color:rgba(255,255,255,.45);margin-top:3px">每种植物都是你的星球的一部分</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.45);margin-top:3px">每种植物都是我的星球的一部分</div>
     </div>
     <div id="log-content"></div>
     <div style="padding:0 14px 40px">
@@ -486,6 +518,7 @@ select.inf option{background:var(--space);color:white}
   <!-- PROFILE -->
   <div id="s-profile" class="screen">
     <div class="profile-hdr">
+      <div class="hdr-stars"></div>
       <div class="guardian-wrap">
         <span class="guardian-emoji" id="profile-guardian">🌱</span>
         <div class="guardian-level" id="guardian-level">Lv.1</div>
@@ -502,6 +535,41 @@ select.inf option{background:var(--space);color:white}
     <div class="sec-ttl">植物币商店 🪙</div>
     <div class="coin-shop" id="coin-shop"></div>
 
+    <div class="sec-ttl">↗ 分享健康</div>
+
+    <div class="share-card-wrap" id="share-preview" style="margin:0 14px 12px;position:relative;overflow:hidden">
+      <div class="hdr-stars"></div>
+      <div style="font-size:10px;letter-spacing:3px;opacity:.5;margin-bottom:10px">植物星球 · PLANT PLANET</div>
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
+        <div style="font-size:42px;line-height:1" id="share-guardian-emoji">🌱</div>
+        <div>
+          <div style="font-size:16px;font-weight:700" id="share-name">探索者</div>
+          <div style="font-size:12px;opacity:.6;margin-top:2px" id="share-title-txt">种子探索者</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">
+        <div style="background:rgba(255,255,255,.1);border-radius:10px;padding:10px 6px;text-align:center">
+          <div style="font-size:22px;font-weight:800;color:var(--gold)" id="share-week-count">0</div>
+          <div style="font-size:10px;opacity:.6;margin-top:1px">本周植物</div>
+        </div>
+        <div style="background:rgba(255,255,255,.1);border-radius:10px;padding:10px 6px;text-align:center">
+          <div style="font-size:22px;font-weight:800;color:var(--green4)" id="share-dii">0</div>
+          <div style="font-size:10px;opacity:.6;margin-top:1px">抗炎指数</div>
+        </div>
+        <div style="background:rgba(255,255,255,.1);border-radius:10px;padding:10px 6px;text-align:center">
+          <div style="font-size:22px;font-weight:800;color:var(--gold2)" id="share-streak">0</div>
+          <div style="font-size:10px;opacity:.6;margin-top:1px">🔥连击</div>
+        </div>
+      </div>
+      <div style="background:rgba(255,255,255,.08);border-radius:8px;padding:8px;margin-bottom:12px">
+        <div style="background:rgba(255,255,255,.1);border-radius:4px;height:6px;overflow:hidden">
+          <div id="share-prog-bar" style="height:100%;background:linear-gradient(90deg,var(--green3),var(--gold));border-radius:4px;width:0%"></div>
+        </div>
+        <div style="font-size:11px;opacity:.5;margin-top:4px;text-align:center" id="share-prog-txt">0 / 30 种</div>
+      </div>
+
+    </div>
+
     <div class="sec-ttl">设置</div>
     <div style="margin:0 14px 12px;background:white;border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.05)">
 
@@ -514,57 +582,43 @@ select.inf option{background:var(--space);color:white}
   </div>
 
   <!-- BOTTOM NAV -->
-    <!-- LEADERBOARD -->
-  <div id="s-rank" class="screen">
+    <!-- PLANT SCREEN -->
+  <div id="s-plant" class="screen">
     <div class="home-hdr" style="padding-bottom:16px">
       <div class="hdr-stars"></div>
       <div style="display:flex;justify-content:space-between;align-items:center">
         <div>
-          <div style="font-size:22px;font-weight:800;color:white">好友排行榜</div>
-          <div style="font-size:12px;color:rgba(255,255,255,.45);margin-top:3px">本周植物多样性比拼</div>
+          <div style="font-size:22px;font-weight:800;color:white">🌱 种植花园</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.45);margin-top:3px">用植物币种植，让星球变茂盛</div>
         </div>
-        <button onclick="openAddFriend()" style="background:rgba(212,168,67,.2);border:1px solid rgba(212,168,67,.3);border-radius:10px;padding:8px 14px;color:var(--gold2);font-size:13px;font-weight:700;font-family:inherit;cursor:pointer">+ 添加好友</button>
+        <div class="coin-badge">
+          <span class="coin-icon">🪙</span>
+          <span class="coin-num" id="plant-coin-display">0</span>
+        </div>
       </div>
     </div>
 
-    <div class="sec-ttl">分享功能</div>
-    <div class="share-card-wrap" id="share-preview">
-      <div style="font-size:11px;letter-spacing:3px;opacity:.5;margin-bottom:12px">植物星球 · FLORA PLANET</div>
-      <div style="font-size:48px;margin-bottom:8px" id="share-guardian-emoji">🌱</div>
-      <div style="font-size:16px;font-weight:700;margin-bottom:4px" id="share-name">探索者</div>
-      <div style="font-size:12px;opacity:.6;margin-bottom:16px" id="share-title-txt">种子探索者</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">
-        <div style="background:rgba(255,255,255,.1);border-radius:12px;padding:12px 8px">
-          <div style="font-size:24px;font-weight:800;color:var(--gold)" id="share-week-count">0</div>
-          <div style="font-size:10px;opacity:.6;margin-top:2px">本周植物</div>
-        </div>
-        <div style="background:rgba(255,255,255,.1);border-radius:12px;padding:12px 8px">
-          <div style="font-size:24px;font-weight:800;color:var(--green4)" id="share-dii">0</div>
-          <div style="font-size:10px;opacity:.6;margin-top:2px">抗炎指数</div>
-        </div>
-        <div style="background:rgba(255,255,255,.1);border-radius:12px;padding:12px 8px">
-          <div style="font-size:24px;font-weight:800;color:var(--gold2)" id="share-streak">0</div>
-          <div style="font-size:10px;opacity:.6;margin-top:2px">🔥连击天</div>
-        </div>
+    <!-- Planet garden view -->
+    <div class="sec-card" style="margin:14px 14px 12px;text-align:center">
+      <div style="font-size:13px;font-weight:700;color:var(--t2);margin-bottom:8px">我的星球花园</div>
+      <div class="planet-garden" id="planet-garden-display">
+        <div style="font-size:13px;color:var(--t3);padding:8px">还没有种植任何东西，快去选购吧！</div>
       </div>
-      <div style="font-size:12px;opacity:.5">每周30种植物挑战 · 为肠道菌群而吃</div>
-      <div class="share-btn-row">
-        <button class="share-btn" onclick="copyShareText()">📋 复制文字</button>
-        <button class="share-btn" onclick="saveShareCard()">🖼 保存图片</button>
-      </div>
+      <div id="garden-stats" style="font-size:12px;color:var(--t3);margin-top:4px"></div>
     </div>
 
-    <div class="sec-ttl">本周排行榜</div>
-    <div class="sec-card" id="lb-content"></div>
-
+    <div class="sec-ttl">植物商店</div>
+    <div style="padding:0 14px">
+      <div class="plant-shop-grid" id="plant-shop-grid"></div>
+    </div>
     <div style="height:120px"></div>
   </div>
 
 <nav class="nav">
     <button class="nb on" id="nb-home" onclick="goTo('home')"><div class="ni-wrap"><span class="ni">🌍</span></div><span>星球</span></button>
     <button class="nb" id="nb-log" onclick="goTo('log')"><div class="ni-wrap"><span class="ni">🌿</span></div><span>记录</span></button>
-    <button class="nb" id="nb-report" onclick="goTo('report')"><div class="ni-wrap"><span class="ni">📊</span></div><span>报告</span></button>
-    <button class="nb" id="nb-rank" onclick="goTo('rank')"><div class="ni-wrap"><span class="ni">🏆</span></div><span>排行</span></button>
+    <button class="nb" id="nb-encyc" onclick="goTo('encyc')"><div class="ni-wrap"><span class="ni">📖</span></div><span>图鉴</span></button>
+    <button class="nb" id="nb-plant" onclick="goTo('plant')"><div class="ni-wrap"><span class="ni">🌱</span></div><span>种植</span></button>
     <button class="nb" id="nb-profile" onclick="goTo('profile')"><div class="ni-wrap"><span class="ni">✨</span></div><span>我的</span></button>
   </nav>
 </div>
@@ -909,6 +963,25 @@ const CREDIT_PACKS=[
   {id:'pro',name:'专业包',credits:300,price:'¥19',desc:'每次仅¥0.06',featured:false},
 ];
 
+// Plant shop items for the garden
+const PLANT_SHOP = [
+  {id:'grass',     emoji:'🌿', name:'一片草地',   desc:'让星球长出第一片嫩草',         cost:50,  category:'基础', effect:'greenery'},
+  {id:'flower1',   emoji:'🌸', name:'樱花',       desc:'粉色樱花点缀我的星球',         cost:80,  category:'花卉', effect:'bloom'},
+  {id:'flower2',   emoji:'🌻', name:'向日葵',     desc:'充满活力的阳光花朵',           cost:80,  category:'花卉', effect:'bloom'},
+  {id:'flower3',   emoji:'🌷', name:'郁金香',     desc:'高贵典雅的彩色郁金香',         cost:100, category:'花卉', effect:'bloom'},
+  {id:'tree1',     emoji:'🌲', name:'松树',       desc:'四季常青，为星球增添生机',     cost:200, category:'树木', effect:'forest'},
+  {id:'tree2',     emoji:'🌳', name:'大橡树',     desc:'百年古树，星球的守护者',       cost:300, category:'树木', effect:'forest'},
+  {id:'tree3',     emoji:'🎋', name:'竹林',       desc:'清雅竹林，东方禅意',           cost:250, category:'树木', effect:'forest'},
+  {id:'tree4',     emoji:'🌴', name:'棕榈树',     desc:'热带风情，海岛星球',           cost:200, category:'树木', effect:'forest'},
+  {id:'mushroom1', emoji:'🍄', name:'魔法蘑菇',   desc:'神奇的星球生物，夜晚会发光',   cost:150, category:'特殊', effect:'magic'},
+  {id:'water1',    emoji:'💧', name:'小溪流',     desc:'潺潺流水为星球带来生命',       cost:300, category:'特殊', effect:'water'},
+  {id:'rainbow1',  emoji:'🌈', name:'彩虹',       desc:'雨后彩虹，最美的星球装饰',     cost:500, category:'特殊', effect:'sky'},
+  {id:'snow1',     emoji:'❄️', name:'雪花草原',  desc:'冬日银装，别样的星球风景',     cost:400, category:'特殊', effect:'winter'},
+  {id:'fruit1',    emoji:'🍎', name:'苹果园',     desc:'硕果累累的果园，星球的粮仓',   cost:350, category:'果园', effect:'harvest'},
+  {id:'fruit2',    emoji:'🍇', name:'葡萄藤',     desc:'紫色葡萄藤缠绕星球',           cost:350, category:'果园', effect:'harvest'},
+  {id:'ancient1',  emoji:'✨', name:'星光树',     desc:'传说中的神树，散发金色光芒',   cost:1000,category:'传说', effect:'legendary'},
+];
+
 // Redeem codes
 var CODE_BANK={"VH-LDONOV":20,"VH-W4T9U9":20,"VH-DF6V70":20,"VH-5EGQ3P":20,"VH-YEGCH3":20,"VH-N89YKM":20,"VH-QAZU1I":20,"VH-H87EWU":20,"VH-T0GDCW":20,"VH-4MSB48":20,"VH-GAAWGS":100,"VH-00ATZ9":100,"VH-AAZN58":100,"VH-9FENS0":100,"VH-G51746":100,"VH-9R9UAR":100,"VH-LA3TFO":100,"VH-G4BUBY":100,"VH-DNQCBP":100,"VH-BRFVNG":100,"VH-RJ2JFV":300,"VH-JQYC5S":300,"VH-MDK04U":300,"VH-C6HPLS":300,"VH-XFL3DZ":300,"VH-ZEPHEW":300,"VH-GZYWOC":300,"VH-4C6Y4I":300,"VH-KFDIZF":300,"VH-JBO081":300};
 
@@ -931,7 +1004,8 @@ var S = {
   purchasedSkins: [],
   activeSkin: null,
   usedCodes: [],
-  friends: [],  // [{name, emoji, weekCount, streak}]
+  friends: [],
+  plantedItems: [],  // [{id, plantedAt}]
 };
 
 var pendingPlants = []; // plants pending save in modal
@@ -1100,27 +1174,29 @@ function finishOb(){
 // STARS ANIMATION
 // ═══════════════════════════════════════════════════
 function initStars(){
-  ['hdr-stars','log-stars'].forEach(function(id){
-    var el=document.getElementById(id);
-    if(!el) return;
-    el.innerHTML='';
-    for(var i=0;i<12;i++){
-      var s=document.createElement('div');
-      s.className='star';
-      s.style.cssText='width:'+(1+Math.random()*2)+'px;height:'+(1+Math.random()*2)+'px;left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;animation-delay:'+Math.random()*2+'s;animation-duration:'+(1.5+Math.random()*2)+'s';
+  // Planet background stars
+  var pStars = document.getElementById('planet-bg-stars');
+  if(pStars){
+    pStars.innerHTML = '';
+    for(var i=0;i<35;i++){
+      var s = document.createElement('div');
+      var size = Math.random()<0.2 ? (2+Math.random()*2) : (0.8+Math.random()*1.5);
+      s.className = 'p-star';
+      s.style.cssText = 'width:'+size+'px;height:'+size+'px;left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;animation-delay:'+(Math.random()*3).toFixed(2)+'s;animation-duration:'+(1+Math.random()*2.5).toFixed(2)+'s';
+      pStars.appendChild(s);
+    }
+  }
+  // All header star containers - fill every .hdr-stars and .ob-stars element
+  document.querySelectorAll('.hdr-stars, .ob-stars').forEach(function(el){
+    el.innerHTML = '';
+    for(var i=0;i<20;i++){
+      var s = document.createElement('div');
+      var size = Math.random()<0.15 ? (2+Math.random()*2) : (0.8+Math.random()*1.5);
+      s.className = 'star';
+      s.style.cssText = 'width:'+size+'px;height:'+size+'px;left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;animation-delay:'+(Math.random()*3).toFixed(2)+'s;animation-duration:'+(1+Math.random()*2.5).toFixed(2)+'s';
       el.appendChild(s);
     }
   });
-  // Ob stars
-  var ob=document.getElementById('ob-stars');
-  if(ob){
-    for(var i=0;i<20;i++){
-      var s=document.createElement('div');
-      s.className='star';
-      s.style.cssText='width:'+(1+Math.random()*3)+'px;height:'+(1+Math.random()*3)+'px;left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;animation-delay:'+Math.random()*3+'s;animation-duration:'+(1+Math.random()*3)+'s';
-      ob.appendChild(s);
-    }
-  }
 }
 
 // ═══════════════════════════════════════════════════
@@ -1140,6 +1216,20 @@ function updatePlanet(){
     var b = Math.round(122 + pct*(100-122));
     pg1.setAttribute('stop-color','rgb('+r+','+g2+','+b+')');
   }
+  // Render planted items on planet surface
+  var details = document.getElementById('planet-details');
+  if(details){
+    var owned = (S.plantedItems||[]).map(function(x){return x.id;});
+    var planetItems = PLANT_SHOP.filter(function(s){return owned.indexOf(s.id)>=0;}).slice(0,8);
+    var positions = [
+      {x:55,y:65},{x:95,y:55},{x:110,y:85},{x:70,y:100},{x:45,y:90},
+      {x:85,y:105},{x:60,y:45},{x:100,y:100}
+    ];
+    details.innerHTML = planetItems.map(function(item,i){
+      var pos = positions[i]||{x:80,y:80};
+      return '<text x="'+pos.x+'" y="'+pos.y+'" font-size="14" text-anchor="middle">'+item.emoji+'</text>';
+    }).join('');
+  }
   // Update guardian on planet
   var guardian = document.getElementById('planet-guardian');
   if(guardian) guardian.textContent = getGuardianStage().emoji;
@@ -1156,14 +1246,14 @@ function updatePlanet(){
 // NAVIGATION
 // ═══════════════════════════════════════════════════
 function goTo(screen){
-  ['home','log','report','rank','profile'].forEach(function(s){
+  ['home','log','encyc','plant','profile'].forEach(function(s){
     document.getElementById('s-'+s).classList.toggle('on', s===screen);
     document.getElementById('nb-'+s).classList.toggle('on', s===screen);
   });
   if(screen==='home') renderHome();
   if(screen==='log') renderLog();
-  if(screen==='report') renderReport();
-  if(screen==='rank') renderRank();
+  if(screen==='encyc') renderEncyc();
+  if(screen==='plant') renderPlant();
   if(screen==='profile') renderProfile();
 }
 function closeModal(id){ document.getElementById(id).classList.remove('open'); }
@@ -1528,6 +1618,8 @@ function renderProfile(){
       '</div>';
   });
   document.getElementById('coin-shop').innerHTML = shopHtml;
+  // Update share card in profile
+  renderShare();
 }
 
 // ═══════════════════════════════════════════════════
@@ -1668,8 +1760,17 @@ function saveCheckin(){
   updatePlanet();
 }
 
-function showCheckinReward(newPlants, pts, weekCount){
+function showCheckinReward(newPlants, pts, weekCount, customMode, customTitle, customText){
   var emoji, title, text;
+  if(customMode){
+    emoji='😢'; title=customTitle||'提示'; text=customText||'';
+    document.getElementById('reward-emoji').textContent = emoji;
+    document.getElementById('reward-title').textContent = title;
+    document.getElementById('reward-coins').textContent = '';
+    document.getElementById('reward-text').textContent = text;
+    document.getElementById('reward-overlay').classList.add('open');
+    return;
+  }
   if(newPlants.length>0&&newPlants.some(function(p){return p.rare;})){
     emoji='💎'; title='稀有植物！'; text='你发现了稀有植物，图鉴+1，植物星球进化了！';
   } else if(newPlants.length>2){
@@ -1680,7 +1781,6 @@ function showCheckinReward(newPlants, pts, weekCount){
     emoji='✅'; title='打卡成功！'; text='保持多样性，每天都有新发现！';
   }
   if(weekCount>=30){ emoji='🏆'; title='本周达成30种！'; text='太厉害了！肠道菌群正在感谢你 🧬'; pts+=200; }
-
   document.getElementById('reward-emoji').textContent = emoji;
   document.getElementById('reward-title').textContent = title;
   document.getElementById('reward-coins').textContent = '+'+pts+' 🪙';
@@ -1694,10 +1794,10 @@ function showWeekReward(){
   var weekCount = getWeekUniqueCount();
   var score = Math.min(100,Math.round((Math.min(30,weekCount)/30*100)));
   var messages = score>=80?
-    [{e:'🌍',t:'星球达人！',d:'你的星球正在茂盛生长，肠道菌群感谢你的多样饮食！'}]:
+    [{e:'🌍',t:'星球达人！',d:'我的星球正在茂盛生长，肠道菌群感谢你的多样饮食！'}]:
     score>=50?
     [{e:'🌿',t:'稳步前进！',d:'继续探索更多植物，星球在等待你的关爱！'}]:
-    [{e:'🌱',t:'星球等你！',d:'你的星球还很年轻，每一种新植物都让它更强大！'}];
+    [{e:'🌱',t:'星球等你！',d:'我的星球还很年轻，每一种新植物都让它更强大！'}];
   var m = messages[0];
   document.getElementById('reward-emoji').textContent = m.e;
   document.getElementById('reward-title').textContent = m.t;
@@ -1741,72 +1841,244 @@ function buyShopItem(id){
 }
 
 // ═══════════════════════════════════════════════════
-// RANK & SHARE
+// PLANTING
 // ═══════════════════════════════════════════════════
-function renderRank(){
+function renderPlant(){
+  var owned = (S.plantedItems||[]).map(function(x){return x.id;});
+  document.getElementById('plant-coin-display').textContent = S.coins||0;
+
+  // Garden display - show planet SVG + planted item list
+  var gardenEl = document.getElementById('planet-garden-display');
+  var statsEl = document.getElementById('garden-stats');
+  var greenPct = Math.min(100, Math.round(owned.length/PLANT_SHOP.length*100));
+
+  if(!owned.length){
+    gardenEl.innerHTML =
+      '<div style="text-align:center;padding:12px">'+
+      '<div style="font-size:36px;margin-bottom:8px">🌑</div>'+
+      '<div style="font-size:13px;color:var(--t3)">星球还很荒芜，去商店购买第一株植物吧！</div>'+
+      '</div>';
+    statsEl.textContent = '';
+  } else {
+    var plantedList = PLANT_SHOP.filter(function(s){return owned.indexOf(s.id)>=0;});
+    // Group by category
+    var byCategory = {};
+    plantedList.forEach(function(p){ if(!byCategory[p.category]) byCategory[p.category]=[]; byCategory[p.category].push(p); });
+    var listHtml = Object.keys(byCategory).map(function(cat){
+      return '<div style="margin-bottom:8px">'+
+        '<div style="font-size:10px;color:var(--t3);font-weight:700;letter-spacing:1px;margin-bottom:4px">'+cat.toUpperCase()+'</div>'+
+        '<div style="display:flex;flex-wrap:wrap;gap:6px">'+
+        byCategory[cat].map(function(p){
+          return '<div style="display:flex;align-items:center;gap:4px;background:rgba(27,67,50,.06);border-radius:20px;padding:4px 10px">'+
+            '<span style="font-size:16px">'+p.emoji+'</span>'+
+            '<span style="font-size:12px;color:var(--green2);font-weight:600">'+p.name+'</span>'+
+            '</div>';
+        }).join('')+
+        '</div></div>';
+    }).join('');
+    gardenEl.innerHTML = listHtml;
+    statsEl.innerHTML =
+      '<span style="color:var(--green);font-weight:700">'+plantedList.length+' 种植物</span>' +
+      ' · 星球绿化度 <span style="color:var(--gold3);font-weight:700">'+greenPct+'%</span>';
+  }
+
+  // Shop grid
+  var html = '';
+  PLANT_SHOP.forEach(function(item){
+    var isOwned = owned.indexOf(item.id)>=0;
+    var canBuy = !isOwned && (S.coins||0)>=item.cost;
+    var isFeatured = item.category==='传说';
+    html += '<div class="plant-shop-item'+(isOwned?' owned':isFeatured?' featured':'')+'" data-plantid="'+item.id+'" data-cost="'+item.cost+'" data-owned="'+(isOwned?'1':'0')+'">';
+    if(isOwned) html += '<div style="position:absolute;top:6px;right:6px;background:var(--green);color:white;font-size:10px;font-weight:800;padding:2px 6px;border-radius:6px">已种植</div>';
+    html += '<span class="psi-emoji">'+item.emoji+'</span>';
+    html += '<div class="psi-name">'+item.name+'</div>';
+    html += '<div class="psi-desc">'+item.desc+'</div>';
+    if(isOwned){
+      html += '<span class="psi-owned">✅ 已拥有</span>';
+    } else if(canBuy){
+      html += '<span class="psi-cost">🪙 '+item.cost+'</span>';
+    } else {
+      html += '<span class="psi-cost" style="opacity:.5">🪙 '+item.cost+'</span>';
+    }
+    html += '</div>';
+  });
+  var grid = document.getElementById('plant-shop-grid');
+  grid.innerHTML = html;
+  // Attach click handler
+  grid.onclick = function(ev){
+    var el = ev.target.closest('[data-plantid]');
+    if(!el) return;
+    if(el.getAttribute('data-owned')==='1') return;
+    buyPlant(el.getAttribute('data-plantid'));
+  };
+}
+
+var _pendingPlantId = null;
+
+function buyPlant(id){
+  var item = PLANT_SHOP.find(function(x){return x.id===id;});
+  if(!item) return;
+  _pendingPlantId = id;
+
+  // Fill modal
+  document.getElementById('pcm-emoji').textContent = item.emoji;
+  document.getElementById('pcm-name').textContent = item.name;
+  document.getElementById('pcm-desc').textContent = item.desc;
+  document.getElementById('pcm-cost').textContent = item.cost;
+  document.getElementById('pcm-balance').textContent = S.coins||0;
+  var after = (S.coins||0) - item.cost;
+  document.getElementById('pcm-after').textContent = after;
+  document.getElementById('pcm-after').style.color = after>=0 ? 'var(--gold2)' : 'var(--red)';
+
+  // Confirm button state
+  var canAfford = (S.coins||0) >= item.cost;
+  var btn = document.getElementById('pcm-confirm-btn');
+  btn.disabled = !canAfford;
+  btn.style.opacity = canAfford ? '1' : '0.5';
+  btn.textContent = canAfford ? '🌱 确认种植' : '植物币不足';
+
+  // Update mini planet preview
+  var owned = (S.plantedItems||[]).map(function(x){return x.id;});
+  var allItems = PLANT_SHOP.filter(function(s){return owned.indexOf(s.id)>=0;});
+  var pct = Math.min(0.9, (allItems.length+1)/PLANT_SHOP.length);
+  var pcmGreen = document.getElementById('pcm-green');
+  if(pcmGreen) pcmGreen.setAttribute('opacity', 0.1 + pct*0.8);
+
+  var positions = [{x:35,y:55},{x:70,y:45},{x:85,y:70},{x:45,y:78},{x:30,y:72},{x:75,y:82}];
+  var itemsEl = document.getElementById('pcm-items');
+  if(itemsEl){
+    itemsEl.innerHTML = allItems.slice(0,6).map(function(p,i){
+      var pos = positions[i]||{x:60,y:60};
+      return '<text x="'+pos.x+'" y="'+pos.y+'" font-size="12" text-anchor="middle" opacity="0.8">'+p.emoji+'</text>';
+    }).join('');
+  }
+  // Show new item with glow
+  var newEl = document.getElementById('pcm-new-item');
+  if(newEl){
+    newEl.textContent = item.emoji;
+    newEl.setAttribute('opacity','1');
+    newEl.style.filter = 'drop-shadow(0 0 6px rgba(212,168,67,.8))';
+  }
+
+  // Effect description
+  var effectDesc = {
+    'greenery':'🌿 为星球覆盖一片嫩草，绿化度提升',
+    'bloom':'🌸 花朵盛开，星球变得色彩斑斓',
+    'forest':'🌲 树木生长，星球森林覆盖率提升',
+    'magic':'✨ 神奇生物出现，星球散发魔法光芒',
+    'water':'💧 水源涌现，为星球带来生命之水',
+    'sky':'🌈 天空装饰，让星球更加美丽',
+    'winter':'❄️ 冬日银装，星球换上别样风景',
+    'harvest':'🍎 果实累累，星球物产丰富',
+    'legendary':'✨ 传说植物降临，星球进化到更高层次'
+  };
+  var el = document.getElementById('pcm-effect-desc');
+  if(el) el.textContent = effectDesc[item.effect] || '这株植物将为我的星球带来生机';
+
+  document.getElementById('plant-modal').classList.add('open');
+}
+
+function confirmPlant(){
+  var id = _pendingPlantId;
+  if(!id) return;
+  var item = PLANT_SHOP.find(function(x){return x.id===id;});
+  if(!item) return;
+  if((S.coins||0)<item.cost){closeModal('plant-modal');return;}
+
+  S.coins -= item.cost;
+  if(!S.plantedItems) S.plantedItems=[];
+  S.plantedItems.push({id:id, plantedAt:Date.now()});
+  save();
+  closeModal('plant-modal');
+  _pendingPlantId = null;
+
+  // Show reward then update
+  setTimeout(function(){
+    showPlantReward(item);
+    renderPlant();
+    updatePlanet();
+    // Scroll to garden top
+    var screen = document.getElementById('s-plant');
+    if(screen) screen.scrollTo({top:0, behavior:'smooth'});
+  }, 150);
+}
+
+function showCantBuy(cost){
+  var need = cost - (S.coins||0);
+  showCheckinReward([], 0, 0, true, '植物币不足 😢', '还差 '+need+' 🪙，继续打卡赚取植物币！');
+}
+
+function showPlantReward(item){
+  document.getElementById('reward-emoji').textContent = item.emoji;
+  document.getElementById('reward-title').textContent = '种植成功！';
+  document.getElementById('reward-coins').textContent = item.name+' 已种在我的星球';
+  document.getElementById('reward-text').textContent = item.desc+'！我的星球又多了一份生机 🌍';
+  document.getElementById('reward-overlay').classList.add('open');
+}
+
+// ═══════════════════════════════════════════════════
+// SHARE
+// ═══════════════════════════════════════════════════
+function shareHealth(){
   var weekCount = getWeekUniqueCount();
   var dii = calcDIIScore(getWeekPlants());
   var stage = getGuardianStage();
+  var lines = [
+    '🌍 植物星球 · 本周健康战报',
+    '',
+    stage.emoji+' '+S.profile.name+' · '+stage.title,
+    '',
+    '🌿 本周植物多样性：'+weekCount+'/30 种',
+    '🔥 抗炎指数：'+dii+'/100',
+    '⚡ 连续打卡：'+(S.streak||0)+' 天',
+    '📚 图鉴已解锁：'+S.allUnlocked.length+' 种',
+    '',
+    weekCount>=30?'🏆 完成每周30种植物挑战！':'💪 距30种目标还差'+(30-weekCount)+'种，加油！',
+    '',
+    '每周吃30种不同植物，让肠道菌群多样化',
+    '科学来源：美国肠道菌群项目 10,000+ 参与者研究 🧬',
+    '',
+    '#植物星球 #每周30种植物 #肠道健康 #抗炎饮食'
+  ];
+  var shareText = lines.join('\n');
 
-  // Update share card preview
-  document.getElementById('share-guardian-emoji').textContent = stage.emoji;
-  document.getElementById('share-name').textContent = S.profile.name;
-  document.getElementById('share-title-txt').textContent = stage.title;
-  document.getElementById('share-week-count').textContent = weekCount;
-  document.getElementById('share-dii').textContent = dii;
-  document.getElementById('share-streak').textContent = S.streak||0;
-
-  // Build leaderboard - me + friends
-  var me = {name:S.profile.name+'（我）', emoji:stage.emoji, weekCount:weekCount, streak:S.streak||0, isMe:true};
-  var friends = S.friends||[];
-  var all = [me].concat(friends);
-  all.sort(function(a,b){ return b.weekCount - a.weekCount; });
-
-  var lbHtml = '';
-  if(all.length<=1){
-    lbHtml = '<div class="empty"><div class="empty-icon">🏆</div>'+
-      '<div class="empty-txt">还没有好友数据<br>点右上角"+ 添加好友"邀请朋友一起挑战！</div></div>';
-  } else {
-    all.forEach(function(p, i){
-      var rank = i+1;
-      var rankClass = rank===1?'r1':rank===2?'r2':rank===3?'r3':'';
-      var rankIcon = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
-      lbHtml += '<div class="lb-item">'+
-        '<div class="lb-rank '+rankClass+'">'+rankIcon+'</div>'+
-        '<div class="lb-avatar'+(p.isMe?' me':'')+'">'+p.emoji+'</div>'+
-        '<div class="lb-body">'+
-        '<div class="lb-name">'+p.name+'</div>'+
-        '<div class="lb-sub">🔥 连击 '+p.streak+' 天</div>'+
-        '</div>'+
-        '<div class="lb-score">'+p.weekCount+'<span> 种</span></div>'+
-        '</div>';
+  // Try Web Share API first (shows native share sheet on mobile)
+  if(navigator.share){
+    navigator.share({
+      title:'植物星球 · 本周健康战报',
+      text: shareText,
+    }).then(function(){
+      // Also offer image download after sharing
+      setTimeout(function(){
+        if(confirm('分享成功！要同时保存战报图片吗？')){
+          saveShareCard();
+        }
+      }, 500);
+    }).catch(function(err){
+      if(err.name!=='AbortError'){
+        // User cancelled or error - fallback
+        fallbackShare(shareText);
+      }
     });
-    // Add motivation
-    var myRank = all.findIndex(function(p){return p.isMe;})+1;
-    if(myRank===1){
-      lbHtml += '<div style="text-align:center;padding:12px;font-size:13px;color:var(--green);font-weight:700">🎉 你是本周植物冠军！</div>';
-    } else {
-      var ahead = all[myRank-2];
-      var diff = ahead.weekCount - weekCount;
-      lbHtml += '<div style="text-align:center;padding:12px;font-size:13px;color:var(--t2)">💪 再吃 '+diff+' 种就能超过 '+ahead.name.replace('（我）','')+'！</div>';
-    }
+  } else {
+    // Fallback: copy text + download image
+    fallbackShare(shareText);
   }
-  document.getElementById('lb-content').innerHTML = lbHtml;
 }
 
-function openAddFriend(){
-  var name = prompt('好友昵称：');
-  if(!name||!name.trim()) return;
-  var weekCount = parseInt(prompt(name+' 本周吃了几种植物？'));
-  if(isNaN(weekCount)||weekCount<0) return;
-  var streak = parseInt(prompt(name+' 连续打卡几天？（不知道填0）')||'0')||0;
-  var emojis = ['🌟','💚','🌸','🦋','🌈','⭐','🍀','🌺'];
-  var emoji = emojis[Math.floor(Math.random()*emojis.length)];
-  if(!S.friends) S.friends=[];
-  S.friends.push({name:name.trim(), emoji:emoji, weekCount:weekCount, streak:streak, isMe:false});
-  save();
-  renderRank();
-  alert('✅ 已添加 '+name+' 到排行榜！');
+function fallbackShare(text){
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(text).then(function(){
+      saveShareCard();
+      alert('✅ 文字已复制 + 图片下载中！\n\n粘贴到微信/朋友圈即可分享 🌍');
+    }).catch(function(){
+      saveShareCard();
+      alert('✅ 图片下载中！');
+    });
+  } else {
+    saveShareCard();
+    prompt('复制以下文字分享：', text);
+  }
 }
 
 function copyShareText(){
@@ -1825,16 +2097,18 @@ function copyShareText(){
     '',
     weekCount>=30?'🏆 本周完成30种挑战！':'💪 距30种目标还差'+(30-weekCount)+'种，加油！',
     '',
-    '每周吃30种植物，让你的肠道菌群多样化 🧬',
-    '#植物星球 #每周30种植物'
+    '每周吃30种植物，让肠道菌群多样化 🧬',
+    '#植物星球 #每周30种植物 #抗炎饮食'
   ];
   var text = lines.join('\n');
   if(navigator.clipboard){
     navigator.clipboard.writeText(text).then(function(){
-      alert('✅ 已复制！可以直接粘贴到朋友圈或微信');
+      alert('✅ 已复制！可以直接粘贴到微信或朋友圈');
+    }).catch(function(){
+      prompt('复制以下内容分享：', text);
     });
   } else {
-    prompt('复制以下内容：', text);
+    prompt('复制以下内容分享：', text);
   }
 }
 
@@ -1843,133 +2117,105 @@ function saveShareCard(){
   canvas.width = 640;
   canvas.height = 800;
   var ctx = canvas.getContext('2d');
-
-  // Background gradient
-  var grad = ctx.createLinearGradient(0, 0, 640, 800);
-  grad.addColorStop(0, '#0A1628');
-  grad.addColorStop(0.5, '#0D2137');
-  grad.addColorStop(1, '#1B4332');
+  var grad = ctx.createLinearGradient(0,0,640,800);
+  grad.addColorStop(0,'#0A1628');
+  grad.addColorStop(0.5,'#0D2137');
+  grad.addColorStop(1,'#1B4332');
   ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, 640, 800);
-
+  ctx.fillRect(0,0,640,800);
   // Stars
-  ctx.fillStyle = 'rgba(255,255,255,0.6)';
-  for(var i=0;i<40;i++){
-    var x=Math.random()*640, y=Math.random()*800, r=Math.random()*2;
-    ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,0.5)';
+  for(var i=0;i<50;i++){
+    var sx=Math.random()*640,sy=Math.random()*800,sr=Math.random()*1.5;
+    ctx.beginPath();ctx.arc(sx,sy,sr,0,Math.PI*2);ctx.fill();
   }
-
   // Logo
-  ctx.font = '600 13px -apple-system,sans-serif';
-  ctx.fillStyle = 'rgba(255,255,255,0.4)';
-  ctx.letterSpacing = '4px';
-  ctx.textAlign = 'center';
-  ctx.fillText('植物星球 · FLORA PLANET', 320, 54);
-
-  // Guardian emoji
-  ctx.font = '80px serif';
-  ctx.textAlign = 'center';
-  ctx.fillText(getGuardianStage().emoji, 320, 160);
-
+  ctx.font='600 13px sans-serif';
+  ctx.fillStyle='rgba(255,255,255,0.4)';
+  ctx.textAlign='center';
+  ctx.fillText('植物星球 · PLANT PLANET',320,50);
+  // Guardian
+  ctx.font='80px serif';
+  ctx.fillText(getGuardianStage().emoji,320,150);
   // Name
-  ctx.font = 'bold 28px -apple-system,PingFang SC,sans-serif';
-  ctx.fillStyle = 'white';
-  ctx.fillText(S.profile.name, 320, 210);
-
+  ctx.font='bold 28px sans-serif';
+  ctx.fillStyle='white';
+  ctx.fillText(S.profile.name,320,200);
   // Title
-  ctx.font = '16px -apple-system,PingFang SC,sans-serif';
-  ctx.fillStyle = '#D4A843';
-  ctx.fillText(getGuardianStage().title, 320, 240);
-
-  // Week count big number
-  var weekCount = getWeekUniqueCount();
-  var dii = calcDIIScore(getWeekPlants());
-
-  // Stats boxes
-  var stats = [
-    {label:'本周植物', value:weekCount+'种', color:'#D4A843'},
-    {label:'抗炎指数', value:dii, color:'#95DE64'},
-    {label:'连击天数', value:(S.streak||0)+'天', color:'#FFD166'},
+  ctx.font='16px sans-serif';
+  ctx.fillStyle='#D4A843';
+  ctx.fillText(getGuardianStage().title,320,230);
+  // Stats
+  var weekCount=getWeekUniqueCount();
+  var dii=calcDIIScore(getWeekPlants());
+  var stats=[
+    {label:'本周植物',value:weekCount+'种',color:'#D4A843'},
+    {label:'抗炎指数',value:String(dii),color:'#95DE64'},
+    {label:'连击天数',value:(S.streak||0)+'天',color:'#FFD166'}
   ];
-  stats.forEach(function(s, i){
-    var x = 80 + i*190;
-    // Box
-    ctx.fillStyle = 'rgba(255,255,255,0.08)';
-    roundRect(ctx, x, 280, 160, 100, 14);
-    ctx.fill();
-    // Value
-    ctx.font = 'bold 32px -apple-system,PingFang SC,sans-serif';
-    ctx.fillStyle = s.color;
-    ctx.textAlign = 'center';
-    ctx.fillText(s.value, x+80, 335);
-    // Label
-    ctx.font = '13px -apple-system,PingFang SC,sans-serif';
-    ctx.fillStyle = 'rgba(255,255,255,0.5)';
-    ctx.fillText(s.label, x+80, 358);
+  stats.forEach(function(s,i){
+    var bx=80+i*190;
+    ctx.fillStyle='rgba(255,255,255,0.08)';
+    ctx.beginPath();ctx.roundRect(bx,270,160,100,14);ctx.fill();
+    ctx.font='bold 32px sans-serif';
+    ctx.fillStyle=s.color;
+    ctx.textAlign='center';
+    ctx.fillText(s.value,bx+80,325);
+    ctx.font='13px sans-serif';
+    ctx.fillStyle='rgba(255,255,255,0.5)';
+    ctx.fillText(s.label,bx+80,350);
   });
-
   // Progress bar
-  ctx.fillStyle = 'rgba(255,255,255,0.1)';
-  roundRect(ctx, 80, 420, 480, 12, 6);
-  ctx.fill();
-  var pct = Math.min(1, weekCount/30);
-  ctx.fillStyle = '#52917A';
-  roundRect(ctx, 80, 420, Math.max(12, 480*pct), 12, 6);
-  ctx.fill();
-  ctx.font = '13px -apple-system,PingFang SC,sans-serif';
-  ctx.fillStyle = 'rgba(255,255,255,0.6)';
-  ctx.textAlign = 'center';
-  ctx.fillText('每周30种植物挑战 · '+weekCount+'/30', 320, 456);
-
-  // Plant tags (top 8 this week)
-  var weekPlants = getWeekPlants();
-  var seen={}, tags=[];
-  weekPlants.forEach(function(p){ if(!seen[p.id]&&tags.length<8){seen[p.id]=true;tags.push(p);} });
-  ctx.font = '16px serif';
-  var tagX = 80, tagY = 490;
+  ctx.fillStyle='rgba(255,255,255,0.1)';
+  ctx.beginPath();ctx.roundRect(80,410,480,12,6);ctx.fill();
+  ctx.fillStyle='#52917A';
+  var pw=Math.max(12,480*Math.min(1,weekCount/30));
+  ctx.beginPath();ctx.roundRect(80,410,pw,12,6);ctx.fill();
+  ctx.font='13px sans-serif';
+  ctx.fillStyle='rgba(255,255,255,0.5)';
+  ctx.textAlign='center';
+  ctx.fillText('每周30种植物挑战 · '+weekCount+'/30',320,445);
+  // Week plants emoji row
+  var weekPlants=getWeekPlants();
+  var seen={},tags=[];
+  weekPlants.forEach(function(p){if(!seen[p.id]&&tags.length<10){seen[p.id]=true;tags.push(p);}});
+  ctx.font='28px serif';
+  var tx=80,ty=490;
   tags.forEach(function(p){
-    ctx.fillStyle = 'rgba(255,255,255,0.08)';
-    var w = 64;
-    roundRect(ctx, tagX, tagY, w, 34, 8);
-    ctx.fill();
-    ctx.font = '18px serif';
-    ctx.textAlign = 'center';
-    ctx.fillText(p.emoji, tagX+32, tagY+24);
-    tagX += 74;
-    if(tagX > 520){ tagX=80; tagY+=44; }
+    ctx.fillText(p.emoji,tx,ty);
+    tx+=58;
+    if(tx>540){tx=80;ty+=46;}
   });
-
-  // Bottom message
-  ctx.font = '14px -apple-system,PingFang SC,sans-serif';
-  ctx.fillStyle = 'rgba(255,255,255,0.4)';
-  ctx.textAlign = 'center';
-  ctx.fillText('为肠道菌群而吃 · 每天打卡植物多样性', 320, 720);
-  ctx.fillText('#植物星球 #每周30种植物 #抗炎饮食', 320, 748);
-
-  // Save
+  // Bottom
+  ctx.font='13px sans-serif';
+  ctx.fillStyle='rgba(255,255,255,0.35)';
+  ctx.textAlign='center';
+  ctx.fillText('为肠道菌群而吃 · 每天打卡植物多样性',320,700);
+  ctx.fillText('#植物星球 #每周30种植物',320,728);
+  // Download
   canvas.toBlob(function(blob){
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = '植物星球_本周战报.png';
-    a.click();
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=url;a.download='植物星球战报.png';a.click();
     URL.revokeObjectURL(url);
   });
 }
 
-function roundRect(ctx, x, y, w, h, r){
-  ctx.beginPath();
-  ctx.moveTo(x+r, y);
-  ctx.lineTo(x+w-r, y);
-  ctx.quadraticCurveTo(x+w, y, x+w, y+r);
-  ctx.lineTo(x+w, y+h-r);
-  ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
-  ctx.lineTo(x+r, y+h);
-  ctx.quadraticCurveTo(x, y+h, x, y+h-r);
-  ctx.lineTo(x, y+r);
-  ctx.quadraticCurveTo(x, y, x+r, y);
-  ctx.closePath();
+function renderShare(){
+  var weekCount = getWeekUniqueCount();
+  var dii = calcDIIScore(getWeekPlants());
+  var stage = getGuardianStage();
+  var pct = Math.min(100, Math.round(weekCount/30*100));
+  document.getElementById('share-guardian-emoji').textContent = stage.emoji;
+  document.getElementById('share-name').textContent = S.profile.name;
+  document.getElementById('share-title-txt').textContent = stage.title;
+  document.getElementById('share-week-count').textContent = weekCount;
+  document.getElementById('share-dii').textContent = dii;
+  document.getElementById('share-streak').textContent = S.streak||0;
+  document.getElementById('share-prog-bar').style.width = pct+'%';
+  document.getElementById('share-prog-txt').textContent = weekCount+' / 30 种';
 }
+
 
 // ═══════════════════════════════════════════════════
 // SETTINGS
@@ -2003,5 +2249,61 @@ document.querySelectorAll('.modal').forEach(function(m){
   m.addEventListener('click', function(e){ if(e.target===m) m.classList.remove('open'); });
 });
 </script>
+<!-- PLANT CONFIRM MODAL -->
+<div class="modal" id="plant-modal">
+  <div class="plant-confirm-box">
+    <div class="mh"></div>
+    <div class="plant-confirm-header" id="pcm-header">
+      <span class="pch-emoji" id="pcm-emoji">🌸</span>
+      <div class="pch-name" id="pcm-name">植物名称</div>
+      <div class="pch-desc" id="pcm-desc">植物描述</div>
+      <div class="pch-stats">
+        <div class="pch-stat">
+          <div class="pch-stat-val" id="pcm-cost">0</div>
+          <div class="pch-stat-lbl">🪙 需要植物币</div>
+        </div>
+        <div class="pch-stat">
+          <div class="pch-stat-val" id="pcm-balance">0</div>
+          <div class="pch-stat-lbl">🪙 你的余额</div>
+        </div>
+        <div class="pch-stat">
+          <div class="pch-stat-val" id="pcm-after">0</div>
+          <div class="pch-stat-lbl">🪙 种植后余额</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mini planet preview -->
+    <div style="background:rgba(27,67,50,.05);border-radius:14px;padding:16px;margin-bottom:14px;text-align:center">
+      <div style="font-size:13px;font-weight:700;color:var(--t2);margin-bottom:10px">种植后我的星球</div>
+      <svg id="pcm-planet" class="planet-mini-preview" viewBox="0 0 120 120">
+        <defs>
+          <radialGradient id="pcmg" cx="40%" cy="35%">
+            <stop id="pcmg1" offset="0%" stop-color="#52917A"/>
+            <stop offset="100%" stop-color="#0A1628"/>
+          </radialGradient>
+          <clipPath id="pcmc"><circle cx="60" cy="60" r="46"/></clipPath>
+        </defs>
+        <circle cx="60" cy="60" r="54" fill="rgba(212,168,67,.08)" stroke="rgba(212,168,67,.2)" stroke-width="1"/>
+        <circle cx="60" cy="60" r="46" fill="#0D2137"/>
+        <circle cx="60" cy="60" r="46" fill="url(#pcmg)" id="pcm-green" opacity="0.3"/>
+        <g clip-path="url(#pcmc)" id="pcm-items"></g>
+        <ellipse cx="60" cy="60" rx="58" ry="15" fill="none" stroke="rgba(212,168,67,.25)" stroke-width="1"/>
+        <text id="pcm-new-item" x="60" y="66" text-anchor="middle" font-size="22" opacity="0">🌸</text>
+      </svg>
+      <div style="font-size:12px;color:var(--green3);font-weight:600" id="pcm-effect-desc">这株植物将为我的星球带来生机</div>
+    </div>
+
+    <div style="display:flex;gap:10px">
+      <button id="pcm-confirm-btn" style="flex:2;background:linear-gradient(135deg,var(--green),var(--green2));color:white;border:none;border-radius:14px;padding:15px;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer" onclick="confirmPlant()">
+        🌱 确认种植
+      </button>
+      <button style="flex:1;background:var(--bg);color:var(--t2);border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:600;font-family:inherit;cursor:pointer" onclick="closeModal('plant-modal')">
+        取消
+      </button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
