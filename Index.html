@@ -1,0 +1,2007 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>植物星球</title>
+<style>
+:root{
+  --space:#0A1628; --space2:#0D2137; --space3:#132840;
+  --green:#1B4332; --green2:#2C5F4A; --green3:#52917A; --green4:#95DE64;
+  --gold:#D4A843; --gold2:#FFD166; --gold3:#B8902C;
+  --red:#E63946; --orange:#E07B39; --purple:#6B48FF;
+  --bg:#F0F4F0; --white:#FFFFFF;
+  --t1:#1a1a2e; --t2:#4a5568; --t3:#a0aec0;
+  --border:rgba(0,0,0,0.08);
+  --sb:env(safe-area-inset-bottom,16px);
+  --st:env(safe-area-inset-top,0px);
+  --nav-h:64px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;height:100dvh;overflow:hidden}
+body{font-family:-apple-system,'PingFang SC','Hiragino Sans GB',sans-serif;background:var(--bg);color:var(--t1);max-width:430px;margin:0 auto;position:relative;overflow:hidden}
+
+/* ── ONBOARDING ── */
+#ob{position:fixed;inset:0;z-index:1000;background:linear-gradient(160deg,var(--space) 0%,var(--space2) 50%,var(--green) 100%);overflow-y:auto;-webkit-overflow-scrolling:touch;padding:calc(var(--st)+50px) 28px calc(60px + var(--sb));color:white}
+#ob.hide{display:none}
+.ob-stars{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.star{position:absolute;border-radius:50%;background:white;animation:twinkle 2s ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:.3}50%{opacity:1}}
+.ob-logo{font-size:13px;letter-spacing:4px;opacity:.5;margin-bottom:28px;text-transform:uppercase}
+.ob-planet-wrap{text-align:center;margin:20px 0 28px}
+.ob-title{font-size:36px;font-weight:800;line-height:1.15;margin-bottom:10px;letter-spacing:-.5px}
+.ob-title span{color:var(--gold)}
+.ob-sub{font-size:15px;opacity:.65;line-height:1.7;margin-bottom:28px}
+.dots{display:flex;gap:6px;margin-bottom:24px}
+.dot{width:6px;height:6px;border-radius:3px;background:rgba(255,255,255,.25);transition:all .3s}
+.dot.on{background:var(--gold);width:22px}
+.ig{margin-bottom:16px}
+.il{font-size:13px;color:rgba(255,255,255,.7);margin-bottom:6px;display:block}
+.inf{width:100%;padding:13px 16px;border:1.5px solid rgba(255,255,255,.2);border-radius:12px;font-size:15px;font-family:inherit;background:rgba(255,255,255,.1);color:white;-webkit-appearance:none}
+.inf:focus{outline:none;border-color:var(--gold)}
+.inf::placeholder{color:rgba(255,255,255,.35)}
+select.inf{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,255,255,.5)' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+select.inf option{background:var(--space);color:white}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold3));color:var(--space);border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;width:100%;transition:transform .15s,opacity .15s;box-shadow:0 4px 20px rgba(212,168,67,.4)}
+.btn-gold:active{transform:scale(.97);opacity:.9}
+.btn-ghost{background:rgba(255,255,255,.1);color:white;border:1.5px solid rgba(255,255,255,.2);border-radius:14px;padding:14px;font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;width:100%;margin-top:10px;transition:opacity .15s}
+
+/* ── APP ── */
+#app{display:flex;flex-direction:column;height:100vh;height:100dvh;visibility:hidden}
+#app.show{visibility:visible}
+.screen{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;display:none;padding-bottom:calc(var(--nav-h)+var(--sb)+220px)}
+.screen.on{display:block}
+
+/* ── NAV ── */
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--space);border-top:1px solid rgba(255,255,255,.08);display:flex;height:calc(var(--nav-h) + env(safe-area-inset-bottom, 16px));padding-bottom:env(safe-area-inset-bottom, 16px);z-index:200}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:none;cursor:pointer;font-family:inherit;color:rgba(255,255,255,.35);font-size:10px;padding-top:8px;transition:color .2s}
+.nb.on{color:var(--gold)}
+.nb.on .ni-wrap{background:rgba(212,168,67,.15);border-radius:12px}
+.ni-wrap{padding:4px 16px;border-radius:12px;transition:background .2s}
+.ni{font-size:22px;line-height:1;display:block}
+
+/* ── HOME SCREEN ── */
+.home-hdr{background:linear-gradient(160deg,var(--space) 0%,var(--space2) 60%,var(--space3) 100%);padding:calc(var(--st)+14px) 20px 20px;position:sticky;top:0;z-index:100;overflow:hidden}
+.hdr-stars{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.hdr-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+.hdr-greeting{font-size:20px;font-weight:700;color:white;letter-spacing:-.3px}
+.hdr-date{font-size:12px;color:rgba(255,255,255,.4);margin-top:3px}
+.coin-badge{display:flex;align-items:center;gap:5px;background:rgba(212,168,67,.15);border:1px solid rgba(212,168,67,.3);border-radius:20px;padding:6px 12px}
+.coin-icon{font-size:14px}
+.coin-num{font-size:14px;font-weight:800;color:var(--gold)}
+.hdr-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.hdr-stat{background:rgba(255,255,255,.07);border-radius:10px;padding:8px;text-align:center}
+.hdr-stat-num{font-size:18px;font-weight:800;color:white;line-height:1}
+.hdr-stat-lbl{font-size:10px;color:rgba(255,255,255,.45);margin-top:2px}
+
+/* ── PLANET SECTION ── */
+.planet-section{background:linear-gradient(180deg,var(--space3) 0%,var(--bg) 100%);padding:24px 20px;text-align:center;position:relative}
+.planet-wrap{position:relative;display:inline-block;margin:0 auto}
+.planet-label{font-size:12px;color:rgba(255,255,255,.5);margin-bottom:8px;letter-spacing:2px;text-transform:uppercase}
+.week-progress{margin-top:16px}
+.week-prog-bar{height:8px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden;margin:6px 0}
+.week-prog-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--green3),var(--gold));transition:width .8s cubic-bezier(.34,1.56,.64,1)}
+.week-prog-labels{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.4)}
+.week-prog-count{font-size:22px;font-weight:800;color:white;margin-top:4px}
+.week-prog-count span{font-size:14px;font-weight:400;color:rgba(255,255,255,.5)}
+
+/* ── STREAK ── */
+.streak-row{display:flex;gap:8px;padding:0 20px;margin:12px 0}
+.streak-day{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.streak-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px}
+.streak-dot.done{background:linear-gradient(135deg,var(--green2),var(--gold3));box-shadow:0 2px 8px rgba(212,168,67,.3)}
+.streak-dot.today{background:rgba(212,168,67,.2);border:2px solid var(--gold)}
+.streak-dot.miss{background:rgba(255,255,255,.06)}
+.streak-day-lbl{font-size:10px;color:var(--t3)}
+
+/* ── QUICK CHECKIN ── */
+.quick-checkin{margin:0 14px 12px;background:white;border-radius:18px;padding:16px;box-shadow:0 2px 16px rgba(0,0,0,.06)}
+.qc-title{font-size:15px;font-weight:700;color:var(--t1);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.qc-today{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;min-height:36px}
+.plant-tag{display:inline-flex;align-items:center;gap:4px;background:rgba(27,67,50,.08);border:1px solid rgba(27,67,50,.15);border-radius:20px;padding:4px 10px;font-size:13px;color:var(--green);font-weight:500}
+.plant-tag .pt-icon{font-size:14px}
+.plant-tag .pt-del{color:var(--t3);cursor:pointer;margin-left:2px;font-size:12px}
+.plant-tag.new-plant{background:rgba(212,168,67,.12);border-color:rgba(212,168,67,.3);color:var(--gold3)}
+.checkin-btn{width:100%;background:linear-gradient(135deg,var(--green),var(--green2));color:white;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 16px rgba(27,67,50,.25)}
+.checkin-btn:active{opacity:.85;transform:scale(.98)}
+
+/* ── SECTION CARDS ── */
+.sec-card{background:white;border-radius:18px;margin:0 14px 12px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.05)}
+.sec-ttl{font-size:11px;font-weight:700;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;padding:14px 18px 6px}
+.sec-card-title{font-size:15px;font-weight:700;color:var(--t1);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.sec-card-title .see-all{font-size:12px;color:var(--green3);font-weight:600}
+
+/* ── ANTI-INFLAMMATORY SCORE ── */
+.dii-score{display:flex;align-items:center;gap:14px}
+.dii-circle{width:72px;height:72px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;position:relative}
+.dii-num{font-size:24px;font-weight:800;line-height:1}
+.dii-lbl{font-size:10px;opacity:.7}
+.dii-bars{flex:1}
+.dii-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.dii-bar-row:last-child{margin-bottom:0}
+.dii-bar-lbl{font-size:12px;color:var(--t2);min-width:60px}
+.dii-bar-track{flex:1;height:6px;background:#EEE;border-radius:3px;overflow:hidden}
+.dii-bar-fill{height:100%;border-radius:3px;transition:width .6s}
+
+/* ── PLANT LOG ── */
+.log-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.log-item:last-child{border-bottom:none}
+.log-icon{width:40px;height:40px;border-radius:10px;background:rgba(27,67,50,.08);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.log-body{flex:1}
+.log-name{font-size:14px;font-weight:600;color:var(--t1)}
+.log-meta{font-size:12px;color:var(--t3);margin-top:2px}
+.log-pts{font-size:13px;font-weight:700;color:var(--gold3)}
+
+/* ── ENCYCLOPEDIA ── */
+.encyc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.encyc-item{background:white;border-radius:12px;padding:10px 6px;text-align:center;box-shadow:0 1px 6px rgba(0,0,0,.05);position:relative}
+.encyc-item.locked{opacity:.35;filter:grayscale(1)}
+.encyc-item.new-badge::after{content:'新';position:absolute;top:4px;right:4px;background:var(--gold);color:var(--space);font-size:9px;font-weight:800;padding:1px 5px;border-radius:6px}
+.encyc-icon{font-size:28px;margin-bottom:4px;line-height:1}
+.encyc-name{font-size:11px;color:var(--t2);font-weight:500}
+.encyc-cat{font-size:10px;color:var(--t3);margin-top:1px}
+
+/* ── REPORTS ── */
+.report-score-card{background:linear-gradient(135deg,var(--space),var(--space3));border-radius:18px;padding:20px;color:white;margin:0 14px 12px}
+.rsc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px}
+.rsc-score-wrap{text-align:center}
+.rsc-score{font-size:64px;font-weight:800;line-height:1;color:var(--gold)}
+.rsc-label{font-size:13px;opacity:.6;margin-top:4px}
+.rsc-desc{font-size:14px;opacity:.8;line-height:1.6}
+.report-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 14px;margin-bottom:12px}
+.rg-item{background:white;border-radius:14px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.rg-lbl{font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.rg-val{font-size:26px;font-weight:800;line-height:1}
+.rg-sub{font-size:12px;color:var(--t2);margin-top:3px}
+.period-row{display:flex;gap:8px;padding:0 14px;margin:12px 0 4px}
+.period-btn{flex:1;padding:9px;text-align:center;border-radius:10px;font-size:13px;font-weight:600;border:1.5px solid var(--border);background:white;color:var(--t3);cursor:pointer;font-family:inherit;transition:all .15s}
+.period-btn.on{background:var(--green);color:white;border-color:var(--green)}
+
+/* ── PROFILE ── */
+.profile-hdr{background:linear-gradient(160deg,var(--space) 0%,var(--space2) 60%,var(--green) 100%);padding:calc(var(--st)+20px) 20px 24px;text-align:center;color:white;position:relative;overflow:hidden}
+.guardian-wrap{position:relative;display:inline-block;margin-bottom:12px}
+.guardian-emoji{font-size:72px;line-height:1;display:block;filter:drop-shadow(0 0 20px rgba(212,168,67,.5))}
+.guardian-level{position:absolute;bottom:-4px;right:-8px;background:var(--gold);color:var(--space);font-size:11px;font-weight:800;padding:3px 8px;border-radius:10px}
+.p-name{font-size:22px;font-weight:700}
+.p-title{font-size:13px;color:var(--gold);margin-top:4px;opacity:.9}
+.stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:0 14px;margin:14px 0 8px}
+.stat-box{background:white;border-radius:14px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.stat-num{font-size:26px;font-weight:800;color:var(--green);line-height:1}
+.stat-lbl{font-size:11px;color:var(--t3);margin-top:3px}
+.achievements-grid{display:flex;flex-wrap:wrap;gap:8px;padding:4px 0}
+.badge-item{display:flex;flex-direction:column;align-items:center;gap:4px;width:72px}
+.badge-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px}
+.badge-icon.earned{background:linear-gradient(135deg,rgba(212,168,67,.2),rgba(212,168,67,.1));border:1px solid rgba(212,168,67,.3)}
+.badge-icon.locked{background:rgba(0,0,0,.06);filter:grayscale(1);opacity:.4}
+.badge-name{font-size:10px;color:var(--t2);text-align:center;line-height:1.3}
+.coin-shop{background:white;border-radius:18px;margin:0 14px 12px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.05)}
+.shop-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.shop-item:last-child{border-bottom:none}
+.shop-icon{width:44px;height:44px;border-radius:12px;background:rgba(212,168,67,.1);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.shop-body{flex:1}
+.shop-name{font-size:14px;font-weight:600}
+.shop-desc{font-size:12px;color:var(--t3)}
+.shop-btn{background:var(--gold);color:var(--space);border:none;border-radius:10px;padding:6px 12px;font-size:12px;font-weight:800;font-family:inherit;cursor:pointer;white-space:nowrap}
+.shop-btn:disabled{background:#E0E0E0;color:#999;cursor:not-allowed}
+
+/* ── MODALS ── */
+.modal{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.6);align-items:flex-end;justify-content:center}
+.modal.open{display:flex;animation:fadeIn .2s}
+.mc{background:white;border-radius:24px 24px 0 0;width:100%;max-width:430px;max-height:92dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 20px calc(24px + var(--sb));animation:slideUp .25s ease}
+.mh{width:36px;height:4px;background:#E0E0E0;border-radius:2px;margin:14px auto 18px}
+.mc-title{font-size:18px;font-weight:800;color:var(--t1);margin-bottom:4px}
+.mc-sub{font-size:13px;color:var(--t3);margin-bottom:16px}
+@keyframes slideUp{from{transform:translateY(80px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* ── PHOTO DROP ── */
+.photo-drop{width:100%;height:150px;border-radius:14px;background:var(--bg);border:2px dashed rgba(27,67,50,.2);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;margin-bottom:12px}
+
+/* ── AI RESULT ── */
+.ai-result{background:rgba(27,67,50,.05);border:1px solid rgba(27,67,50,.12);border-radius:14px;padding:14px;margin:10px 0}
+.plant-found-item{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid rgba(0,0,0,.05)}
+.plant-found-item:last-child{border-bottom:none}
+.pf-icon{font-size:20px;width:28px;text-align:center}
+.pf-name{flex:1;font-size:14px;font-weight:600}
+.pf-pts{font-size:13px;font-weight:700;color:var(--gold3)}
+.pf-new{font-size:10px;background:var(--gold);color:var(--space);padding:2px 6px;border-radius:6px;font-weight:800}
+
+/* ── POPUP REWARD ── */
+.reward-overlay{display:none;position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.7);align-items:center;justify-content:center;padding:24px}
+.reward-overlay.open{display:flex;animation:fadeIn .3s}
+.reward-box{background:linear-gradient(160deg,var(--space),var(--space3));border-radius:24px;padding:32px 24px;text-align:center;max-width:320px;width:100%;border:1px solid rgba(212,168,67,.3);animation:popIn .4s cubic-bezier(.175,.885,.32,1.275);position:relative;overflow:hidden}
+@keyframes popIn{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+.reward-emoji{font-size:64px;margin-bottom:12px;line-height:1;display:block;animation:bounce 1s ease-in-out infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.reward-title{font-size:22px;font-weight:800;color:var(--gold);margin-bottom:8px}
+.reward-text{font-size:14px;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:20px}
+.reward-coins{font-size:36px;font-weight:800;color:var(--gold2);margin:8px 0}
+.reward-btn{background:linear-gradient(135deg,var(--gold),var(--gold3));color:var(--space);border:none;border-radius:14px;padding:14px 32px;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer}
+.stars-burst{position:absolute;inset:0;pointer-events:none}
+
+/* ── SPINNERS ── */
+.spin{width:20px;height:20px;border:2.5px solid rgba(27,67,50,.15);border-top-color:var(--green);border-radius:50%;animation:rotate .7s linear infinite;display:inline-block;vertical-align:middle}
+@keyframes rotate{to{transform:rotate(360deg)}}
+.analyzing{display:flex;align-items:center;justify-content:center;gap:8px;padding:20px;color:var(--t2);font-size:14px}
+
+/* ── UTILS ── */
+.btn-green{background:linear-gradient(135deg,var(--green),var(--green2));color:white;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;width:100%;transition:opacity .15s,transform .1s}
+.btn-green:active{opacity:.85;transform:scale(.98)}
+.btn-outline{background:transparent;color:var(--green);border:1.5px solid var(--green);border-radius:12px;padding:12px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;width:100%;margin-top:8px;transition:opacity .15s}
+.empty{text-align:center;padding:32px 20px;color:var(--t3)}
+.empty-icon{font-size:40px;margin-bottom:10px}
+.empty-txt{font-size:14px;line-height:1.6}
+.tip-box{background:rgba(212,168,67,.08);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:10px 12px;margin:8px 0;font-size:13px;color:var(--t2);line-height:1.5}
+.il-d{font-size:13px;color:var(--t2);margin-bottom:5px;display:block}
+.inf-d{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;font-family:inherit;background:var(--bg);color:var(--t1);-webkit-appearance:none}
+.inf-d:focus{outline:none;border-color:var(--green)}
+.inf-d::placeholder{color:var(--t3)}
+
+/* ── LEADERBOARD ── */
+.lb-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.lb-item:last-child{border-bottom:none}
+.lb-rank{font-size:20px;font-weight:800;min-width:32px;text-align:center}
+.lb-rank.r1{color:var(--gold)}
+.lb-rank.r2{color:#A8A8A8}
+.lb-rank.r3{color:#CD7F32}
+.lb-avatar{width:42px;height:42px;border-radius:50%;background:rgba(27,67,50,.1);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.lb-avatar.me{background:rgba(212,168,67,.15);border:2px solid var(--gold)}
+.lb-body{flex:1}
+.lb-name{font-size:14px;font-weight:700;color:var(--t1)}
+.lb-sub{font-size:12px;color:var(--t3);margin-top:2px}
+.lb-score{font-size:18px;font-weight:800;color:var(--green);text-align:right}
+.lb-score span{font-size:11px;font-weight:400;color:var(--t3)}
+.add-friend-row{display:flex;gap:8px;margin-top:12px}
+.share-card-wrap{background:linear-gradient(160deg,var(--space) 0%,var(--space2) 50%,var(--green) 100%);border-radius:20px;padding:24px;margin:0 14px 12px;text-align:center;color:white;position:relative;overflow:hidden}
+.share-btn-row{display:flex;gap:8px;margin-top:14px}
+.share-btn{flex:1;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:12px;font-size:13px;font-weight:700;color:white;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:background .15s}
+.share-btn:active{background:rgba(255,255,255,.25)}
+</style>
+</head>
+<body>
+
+<!-- ONBOARDING -->
+<div id="ob">
+  <div class="ob-stars" id="ob-stars"></div>
+  <div class="ob-logo">植物星球 · Flora Planet</div>
+
+  <div id="ob1">
+    <div class="dots"><div class="dot on"></div><div class="dot"></div><div class="dot"></div></div>
+    <div class="ob-planet-wrap">
+      <svg width="120" height="120" viewBox="0 0 120 120">
+        <circle cx="60" cy="60" r="50" fill="#0D2137" stroke="rgba(212,168,67,.3)" stroke-width="1"/>
+        <circle cx="60" cy="60" r="50" fill="url(#planetGrad)" opacity=".6"/>
+        <ellipse cx="60" cy="60" rx="50" ry="15" fill="none" stroke="rgba(212,168,67,.4)" stroke-width="1.5"/>
+        <text x="60" y="68" text-anchor="middle" font-size="36">🌍</text>
+        <defs><radialGradient id="planetGrad" cx="40%" cy="35%"><stop offset="0%" stop-color="#52917A" stop-opacity=".8"/><stop offset="100%" stop-color="#0A1628" stop-opacity=".2"/></radialGradient></defs>
+      </svg>
+    </div>
+    <div class="ob-title">探索你的<br><span>植物星球</span></div>
+    <div class="ob-sub">每周吃30种不同植物，你的星球就会慢慢变绿、变茂盛。科学证明，植物多样性是肠道健康和抗炎的关键。</div>
+    <div class="ig"><label class="il">你的名字</label><input class="inf" id="o-name" placeholder="如：Luna" type="text"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="ig"><label class="il">年龄</label><input class="inf" id="o-age" placeholder="岁" type="number" min="10" max="100"></div>
+      <div class="ig"><label class="il">性别</label><select class="inf" id="o-gender"><option value="">选择</option><option value="F">女</option><option value="M">男</option></select></div>
+    </div>
+    <button class="btn-gold" onclick="ob2()">出发探索 🚀</button>
+  </div>
+
+  <div id="ob2" style="display:none">
+    <div class="dots"><div class="dot"></div><div class="dot on"></div><div class="dot"></div></div>
+    <div class="ob-title">你的<span>守护精灵</span></div>
+    <div class="ob-sub">你的星球守护精灵会随着你吃的植物种类增加而成长进化。你吃得越多样，精灵越强大！<br><br>无需任何账号或付费，完全免费使用。</div>
+    <div style="background:rgba(255,255,255,.08);border-radius:16px;padding:20px;text-align:center;margin-bottom:24px">
+      <div style="font-size:72px;margin-bottom:10px;animation:bounce 2s ease-in-out infinite">🌱</div>
+      <div style="font-size:16px;font-weight:700;color:var(--gold)">种子精灵</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.5);margin-top:4px">等级 1 · 等待你的第一次打卡</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.4);margin-top:12px;line-height:1.6">
+        🌱 种子 → 🌿 幼苗 → 🌸 花期 → 🌳 大树 → ✨ 神树
+      </div>
+    </div>
+
+    <button class="btn-gold" onclick="ob3()">下一步 →</button>
+    <button class="btn-ghost" onclick="showOb(1)">← 返回</button>
+  </div>
+
+  <div id="ob3" style="display:none">
+    <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot on"></div></div>
+    <div class="ob-title">你的<span>每周挑战</span></div>
+    <div class="ob-sub">每周30种植物的挑战。蔬菜、水果、豆类、坚果、谷物、香草香料——都算！种类越多越好。</div>
+    <div style="background:rgba(255,255,255,.08);border-radius:16px;padding:16px;margin-bottom:20px">
+      <div style="font-size:13px;color:rgba(255,255,255,.7);margin-bottom:10px">🎯 以下都算一种植物：</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <span style="background:rgba(255,255,255,.1);border-radius:20px;padding:4px 10px;font-size:12px;color:white">🥦 西兰花</span>
+        <span style="background:rgba(255,255,255,.1);border-radius:20px;padding:4px 10px;font-size:12px;color:white">🫐 蓝莓</span>
+        <span style="background:rgba(255,255,255,.1);border-radius:20px;padding:4px 10px;font-size:12px;color:white">🌰 核桃</span>
+        <span style="background:rgba(255,255,255,.1);border-radius:20px;padding:4px 10px;font-size:12px;color:white">🫘 鹰嘴豆</span>
+        <span style="background:rgba(255,255,255,.1);border-radius:20px;padding:4px 10px;font-size:12px;color:white">🌾 燕麦</span>
+        <span style="background:rgba(255,255,255,.1);border-radius:20px;padding:4px 10px;font-size:12px;color:white">🌿 香菜</span>
+        <span style="background:rgba(255,255,255,.1);border-radius:20px;padding:4px 10px;font-size:12px;color:white">🍵 绿茶</span>
+        <span style="background:rgba(255,255,255,.1);border-radius:20px;padding:4px 10px;font-size:12px;color:white">+ 更多</span>
+      </div>
+    </div>
+    <button class="btn-gold" onclick="finishOb()">开始我的星球旅程 🌍</button>
+    <button class="btn-ghost" onclick="showOb(2)">← 返回</button>
+  </div>
+</div>
+
+<!-- REWARD POPUP -->
+<div class="reward-overlay" id="reward-overlay" onclick="closeReward()">
+  <div class="reward-box" onclick="event.stopPropagation()">
+    <div class="stars-burst" id="reward-stars"></div>
+    <span class="reward-emoji" id="reward-emoji">🌿</span>
+    <div class="reward-title" id="reward-title">新植物发现！</div>
+    <div class="reward-coins" id="reward-coins">+10 🪙</div>
+    <div class="reward-text" id="reward-text">继续探索更多植物！</div>
+    <button class="reward-btn" onclick="closeReward()">太棒了！</button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+
+  <!-- HOME -->
+  <div id="s-home" class="screen on">
+    <div class="home-hdr">
+      <div class="hdr-stars" id="hdr-stars"></div>
+      <div class="hdr-top">
+        <div>
+          <div class="hdr-greeting" id="greeting"></div>
+          <div class="hdr-date" id="hdr-date"></div>
+        </div>
+        <div class="coin-badge">
+          <span class="coin-icon">🪙</span>
+          <span class="coin-num" id="coin-display">0</span>
+        </div>
+      </div>
+      <div class="hdr-stats" id="hdr-stats"></div>
+    </div>
+
+    <!-- Planet -->
+    <div class="planet-section">
+      <div class="planet-label">你的星球</div>
+      <div class="planet-wrap">
+        <svg id="planet-svg" width="160" height="160" viewBox="0 0 160 160">
+          <defs>
+            <radialGradient id="pg" cx="40%" cy="35%">
+              <stop id="pg1" offset="0%" stop-color="#52917A"/>
+              <stop id="pg2" offset="100%" stop-color="#0A1628"/>
+            </radialGradient>
+            <clipPath id="pc"><circle cx="80" cy="80" r="62"/></clipPath>
+          </defs>
+          <!-- Space bg -->
+          <circle cx="80" cy="80" r="72" fill="rgba(212,168,67,.08)" stroke="rgba(212,168,67,.2)" stroke-width="1"/>
+          <!-- Planet base -->
+          <circle cx="80" cy="80" r="62" fill="#0D2137"/>
+          <!-- Green coverage (grows with plants) -->
+          <circle cx="80" cy="80" r="62" fill="url(#pg)" id="planet-green" opacity="0.1"/>
+          <!-- Surface details (clip to planet) -->
+          <g clip-path="url(#pc)" id="planet-details"></g>
+          <!-- Planet shine -->
+          <circle cx="80" cy="80" r="62" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="1"/>
+          <ellipse cx="65" cy="58" rx="18" ry="10" fill="rgba(255,255,255,.06)" transform="rotate(-20 65 58)"/>
+          <!-- Ring -->
+          <ellipse cx="80" cy="80" rx="78" ry="20" fill="none" stroke="rgba(212,168,67,.3)" stroke-width="1.5"/>
+          <!-- Guardian on planet -->
+          <text id="planet-guardian" x="80" y="92" text-anchor="middle" font-size="36">🌱</text>
+        </svg>
+      </div>
+      <div class="week-progress">
+        <div class="week-prog-labels">
+          <span>本周进度</span>
+          <span id="week-fraction">0/30 种植物</span>
+        </div>
+        <div class="week-prog-bar">
+          <div class="week-prog-fill" id="week-prog-fill" style="width:0%"></div>
+        </div>
+        <div class="week-prog-count" id="week-prog-count">0 <span>/ 30种</span></div>
+      </div>
+    </div>
+
+    <!-- Streak -->
+    <div class="sec-ttl">连续打卡</div>
+    <div class="streak-row" id="streak-row"></div>
+
+    <!-- Today's plants -->
+    <div class="quick-checkin">
+      <div class="qc-title">
+        <span>🌿</span>
+        <span>今日植物 <span id="today-count" style="color:var(--green3)">(0种)</span></span>
+      </div>
+      <div class="qc-today" id="today-plants">
+        <span style="font-size:13px;color:var(--t3);padding:4px 0">今天还没有打卡，去探索吧！</span>
+      </div>
+      <button class="checkin-btn" onclick="openCheckinModal()">
+        <span style="font-size:20px">🌿</span> 记录今日植物
+      </button>
+    </div>
+
+    <!-- Anti-inflammatory score -->
+    <div class="sec-ttl">今日抗炎指数</div>
+    <div class="sec-card" id="dii-card"></div>
+
+    <!-- Bottom switch -->
+    <div style="padding:0 14px 32px">
+      <button onclick="goTo('log')" style="width:100%;background:transparent;color:var(--green);border:1.5px solid rgba(27,67,50,.2);border-radius:14px;padding:12px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer">
+        查看今日植物记录 →
+      </button>
+    </div>
+    <div style="height:40px"></div>
+  </div>
+
+  <!-- PLANT LOG -->
+  <div id="s-log" class="screen">
+    <div class="home-hdr" style="padding-bottom:16px">
+      <div class="hdr-stars" id="log-stars"></div>
+      <div style="font-size:22px;font-weight:800;color:white">打卡记录</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.45);margin-top:3px">每种植物都是你的星球的一部分</div>
+    </div>
+    <div id="log-content"></div>
+    <div style="padding:0 14px 40px">
+      <button class="btn-green" onclick="openCheckinModal()">🌿 继续打卡植物</button>
+      <div style="height:60px"></div>
+    </div>
+  </div>
+
+  <!-- ENCYCLOPEDIA -->
+  <div id="s-encyc" class="screen">
+    <div class="home-hdr" style="padding-bottom:16px">
+      <div class="hdr-stars"></div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <div style="font-size:22px;font-weight:800;color:white">植物图鉴</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.45);margin-top:3px" id="encyc-subtitle">已发现 0 / 60 种</div>
+        </div>
+        <div style="background:rgba(212,168,67,.15);border:1px solid rgba(212,168,67,.3);border-radius:10px;padding:6px 12px;text-align:center">
+          <div style="font-size:18px;font-weight:800;color:var(--gold)" id="encyc-count">0</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.4)">已解锁</div>
+        </div>
+      </div>
+    </div>
+    <div id="encyc-content" style="padding:14px"></div>
+  </div>
+
+  <!-- REPORTS -->
+  <div id="s-report" class="screen">
+    <div class="home-hdr" style="padding-bottom:16px">
+      <div class="hdr-stars"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-size:22px;font-weight:800;color:white">健康报告</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.45);margin-top:3px">植物多样性 · 抗炎指数</div>
+        </div>
+        <button style="background:var(--gold);border:none;border-radius:10px;padding:8px 14px;color:var(--space);font-size:13px;font-weight:800;font-family:inherit;cursor:pointer" onclick="showWeekReward()">🎯 本周评分</button>
+      </div>
+    </div>
+    <div class="period-row">
+      <button class="period-btn on" id="pb-day" onclick="switchPeriod('day')">今日</button>
+      <button class="period-btn" id="pb-week" onclick="switchPeriod('week')">本周</button>
+      <button class="period-btn" id="pb-month" onclick="switchPeriod('month')">本月</button>
+    </div>
+    <div id="report-content"></div>
+  </div>
+
+  <!-- PROFILE -->
+  <div id="s-profile" class="screen">
+    <div class="profile-hdr">
+      <div class="guardian-wrap">
+        <span class="guardian-emoji" id="profile-guardian">🌱</span>
+        <div class="guardian-level" id="guardian-level">Lv.1</div>
+      </div>
+      <div class="p-name" id="profile-name"></div>
+      <div class="p-title" id="profile-title">种子探索者</div>
+    </div>
+
+    <div class="stats-row" id="profile-stats"></div>
+
+    <div class="sec-ttl">成就徽章</div>
+    <div class="sec-card" id="badges-card"></div>
+
+    <div class="sec-ttl">植物币商店 🪙</div>
+    <div class="coin-shop" id="coin-shop"></div>
+
+    <div class="sec-ttl">设置</div>
+    <div style="margin:0 14px 12px;background:white;border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.05)">
+
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px">
+        <span style="font-size:15px;color:var(--red)">🔄 重置账号</span>
+        <button onclick="resetAccount()" style="background:rgba(230,57,70,.08);color:var(--red);border:1px solid rgba(230,57,70,.2);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer">重置</button>
+      </div>
+    </div>
+    <div style="height:80px"></div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+    <!-- LEADERBOARD -->
+  <div id="s-rank" class="screen">
+    <div class="home-hdr" style="padding-bottom:16px">
+      <div class="hdr-stars"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-size:22px;font-weight:800;color:white">好友排行榜</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.45);margin-top:3px">本周植物多样性比拼</div>
+        </div>
+        <button onclick="openAddFriend()" style="background:rgba(212,168,67,.2);border:1px solid rgba(212,168,67,.3);border-radius:10px;padding:8px 14px;color:var(--gold2);font-size:13px;font-weight:700;font-family:inherit;cursor:pointer">+ 添加好友</button>
+      </div>
+    </div>
+
+    <div class="sec-ttl">分享功能</div>
+    <div class="share-card-wrap" id="share-preview">
+      <div style="font-size:11px;letter-spacing:3px;opacity:.5;margin-bottom:12px">植物星球 · FLORA PLANET</div>
+      <div style="font-size:48px;margin-bottom:8px" id="share-guardian-emoji">🌱</div>
+      <div style="font-size:16px;font-weight:700;margin-bottom:4px" id="share-name">探索者</div>
+      <div style="font-size:12px;opacity:.6;margin-bottom:16px" id="share-title-txt">种子探索者</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">
+        <div style="background:rgba(255,255,255,.1);border-radius:12px;padding:12px 8px">
+          <div style="font-size:24px;font-weight:800;color:var(--gold)" id="share-week-count">0</div>
+          <div style="font-size:10px;opacity:.6;margin-top:2px">本周植物</div>
+        </div>
+        <div style="background:rgba(255,255,255,.1);border-radius:12px;padding:12px 8px">
+          <div style="font-size:24px;font-weight:800;color:var(--green4)" id="share-dii">0</div>
+          <div style="font-size:10px;opacity:.6;margin-top:2px">抗炎指数</div>
+        </div>
+        <div style="background:rgba(255,255,255,.1);border-radius:12px;padding:12px 8px">
+          <div style="font-size:24px;font-weight:800;color:var(--gold2)" id="share-streak">0</div>
+          <div style="font-size:10px;opacity:.6;margin-top:2px">🔥连击天</div>
+        </div>
+      </div>
+      <div style="font-size:12px;opacity:.5">每周30种植物挑战 · 为肠道菌群而吃</div>
+      <div class="share-btn-row">
+        <button class="share-btn" onclick="copyShareText()">📋 复制文字</button>
+        <button class="share-btn" onclick="saveShareCard()">🖼 保存图片</button>
+      </div>
+    </div>
+
+    <div class="sec-ttl">本周排行榜</div>
+    <div class="sec-card" id="lb-content"></div>
+
+    <div style="height:120px"></div>
+  </div>
+
+<nav class="nav">
+    <button class="nb on" id="nb-home" onclick="goTo('home')"><div class="ni-wrap"><span class="ni">🌍</span></div><span>星球</span></button>
+    <button class="nb" id="nb-log" onclick="goTo('log')"><div class="ni-wrap"><span class="ni">🌿</span></div><span>记录</span></button>
+    <button class="nb" id="nb-report" onclick="goTo('report')"><div class="ni-wrap"><span class="ni">📊</span></div><span>报告</span></button>
+    <button class="nb" id="nb-rank" onclick="goTo('rank')"><div class="ni-wrap"><span class="ni">🏆</span></div><span>排行</span></button>
+    <button class="nb" id="nb-profile" onclick="goTo('profile')"><div class="ni-wrap"><span class="ni">✨</span></div><span>我的</span></button>
+  </nav>
+</div>
+
+<!-- CHECKIN MODAL -->
+<div class="modal" id="checkin-modal">
+  <div class="mc">
+    <div class="mh"></div>
+    <div class="mc-title">📷 植物打卡</div>
+    <div class="mc-sub">拍照或手动输入，AI自动识别植物种类</div>
+
+    <div style="background:rgba(27,67,50,.05);border-radius:12px;padding:14px;margin-bottom:14px;text-align:center">
+      <div style="font-size:28px;margin-bottom:6px">🌿</div>
+      <div style="font-size:13px;color:var(--t2);line-height:1.6">输入你今天吃到的植物<br>蔬菜、水果、坚果、香料都算！</div>
+    </div>
+
+    <div style="margin-top:4px">
+      <label class="il-d">添加植物</label>
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <input class="inf-d" id="manual-plant" placeholder="如：西兰花、核桃、绿茶…" style="flex:1" oninput="updateManualSuggest()" onkeydown="if(event.key==='Enter')addManualPlant()">
+        <button onclick="addManualPlant()" style="background:var(--green);color:white;border:none;border-radius:10px;padding:0 16px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer">添加</button>
+      </div>
+      <div id="manual-suggest" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px"></div>
+    </div>
+
+    <div id="pending-plants" style="margin:8px 0"></div>
+
+    <button class="btn-green" id="save-checkin-btn" onclick="saveCheckin()" style="display:none">✅ 保存打卡记录</button>
+    <button class="btn-outline" onclick="closeCheckinModal()">取消</button>
+  </div>
+</div>
+
+
+
+<script>
+// ═══════════════════════════════════════════════════
+// DATA & CONSTANTS
+// ═══════════════════════════════════════════════════
+var WALNUT_IMG='data:image/png;base64,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';
+const GUARDIAN_STAGES = [
+  {emoji:'🌱', name:'种子精灵',  title:'种子探索者',  minPlants:0},
+  {emoji:'🌿', name:'幼苗精灵',  title:'植物新手',    minPlants:30},
+  {emoji:'🌸', name:'花期精灵',  title:'自然守护者',  minPlants:100},
+  {emoji:'🌳', name:'古树精灵',  title:'星球卫士',    minPlants:300},
+  {emoji:'✨', name:'神树精灵',  title:'星际植物神',  minPlants:1000},
+];
+
+const ACHIEVEMENTS = [
+  {id:'first',   icon:'🌱', name:'初次打卡',   desc:'打卡第一种植物',  check:function(s){return s.totalUnique>=1;}},
+  {id:'ten',     icon:'🌿', name:'十种先锋',   desc:'累计10种植物',    check:function(s){return s.totalUnique>=10;}},
+  {id:'thirty',  icon:'🏆', name:'三十达人',   desc:'单周30种挑战',    check:function(s){return s.weekBest>=30;}},
+  {id:'streak7', icon:'🔥', name:'七日坚持',   desc:'连续打卡7天',     check:function(s){return s.maxStreak>=7;}},
+  {id:'rare',    icon:'💎', name:'稀有猎手',   desc:'发现稀有植物',    check:function(s){return s.rareFound>=1;}},
+  {id:'hundred', icon:'🌟', name:'百种传说',   desc:'累计100种植物',   check:function(s){return s.totalUnique>=100;}},
+  {id:'coins',   icon:'🪙', name:'植物富翁',   desc:'积累500植物币',   check:function(s){return s.totalCoins>=500;}},
+  {id:'streak30',icon:'⚡', name:'月度坚持',   desc:'连续打卡30天',    check:function(s){return s.maxStreak>=30;}},
+];
+
+const SHOP_ITEMS = [
+  {id:'rain',    icon:'💧', name:'神奇雨露',   desc:'精灵成长速度+50%（1天）', cost:100, type:'boost'},
+  {id:'sun',     icon:'☀️', name:'星光沐浴',  desc:'精灵升级所需减少20%',     cost:200, type:'boost'},
+  {id:'skin1',   icon:'🌸', name:'樱花皮肤',  desc:'精灵樱花外观',             cost:300, type:'skin'},
+  {id:'skin2',   icon:'🌊', name:'海洋皮肤',  desc:'精灵海洋外观',             cost:300, type:'skin'},
+  {id:'skin3',   icon:'❄️', name:'冬雪皮肤',  desc:'精灵冬雪外观',             cost:500, type:'skin'},
+];
+
+// Plant encyclopedia - 60 plants
+const PLANT_DB = [
+  {id:'broccoli',name:'西兰花',emoji:'🥦',cat:'蔬菜',anti:9,rare:false},
+  {id:'spinach',name:'菠菜',emoji:'🥬',cat:'蔬菜',anti:8,rare:false},
+  {id:'carrot',name:'胡萝卜',emoji:'🥕',cat:'蔬菜',anti:7,rare:false},
+  {id:'tomato',name:'番茄',emoji:'🍅',cat:'蔬菜',anti:8,rare:false},
+  {id:'garlic',name:'大蒜',emoji:'🧄',cat:'蔬菜',anti:9,rare:false},
+  {id:'onion',name:'洋葱',emoji:'🧅',cat:'蔬菜',anti:7,rare:false},
+  {id:'pepper_sweet',name:'甜椒',emoji:'🫑',cat:'蔬菜',anti:7,rare:false},
+  {id:'corn',name:'玉米',emoji:'🌽',cat:'蔬菜',anti:5,rare:false},
+  {id:'cabbage',name:'卷心菜',emoji:'🥬',cat:'蔬菜',anti:6,rare:false},
+  {id:'kale',name:'羽衣甘蓝',emoji:'🥬',cat:'蔬菜',anti:10,rare:true},
+  {id:'beetroot',name:'甜菜根',emoji:'🫛',cat:'蔬菜',anti:8,rare:true},
+  {id:'celery',name:'芹菜',emoji:'🥬',cat:'蔬菜',anti:6,rare:false},
+  {id:'cucumber',name:'黄瓜',emoji:'🥒',cat:'蔬菜',anti:5,rare:false},
+  {id:'eggplant',name:'茄子',emoji:'🍆',cat:'蔬菜',anti:6,rare:false},
+  {id:'bok_choy',name:'小白菜',emoji:'🥬',cat:'蔬菜',anti:7,rare:false},
+  {id:'chinese_cabbage',name:'大白菜',emoji:'🥬',cat:'蔬菜',anti:6,rare:false},
+  {id:'lotus_root',name:'莲藕',emoji:'🪷',cat:'蔬菜',anti:7,rare:false},
+  {id:'bamboo_shoot',name:'竹笋',emoji:'🎋',cat:'蔬菜',anti:6,rare:false},
+  {id:'water_chestnut',name:'荸荠',emoji:'⚪',cat:'蔬菜',anti:5,rare:false},
+  {id:'yam',name:'山药',emoji:'🍠',cat:'蔬菜',anti:7,rare:false},
+  {id:'pumpkin_veg',name:'南瓜',emoji:'🎃',cat:'蔬菜',anti:7,rare:false},
+  {id:'zucchini',name:'西葫芦',emoji:'🥒',cat:'蔬菜',anti:5,rare:false},
+  {id:'leek',name:'韭菜',emoji:'🌿',cat:'蔬菜',anti:7,rare:false},
+  {id:'asparagus',name:'芦笋',emoji:'🌿',cat:'蔬菜',anti:8,rare:true},
+  {id:'bitter_melon',name:'苦瓜',emoji:'🥒',cat:'蔬菜',anti:8,rare:false},
+  {id:'chives',name:'韭黄',emoji:'🌿',cat:'蔬菜',anti:6,rare:false},
+  {id:'taro',name:'芋头',emoji:'🟤',cat:'蔬菜',anti:5,rare:false},
+  {id:'sweet_potato',name:'红薯',emoji:'🍠',cat:'蔬菜',anti:7,rare:false},
+  {id:'radish',name:'白萝卜',emoji:'🫒',cat:'蔬菜',anti:6,rare:false},
+  {id:'daikon',name:'青萝卜',emoji:'🥬',cat:'蔬菜',anti:6,rare:false},
+  {id:'napa',name:'娃娃菜',emoji:'🥬',cat:'蔬菜',anti:6,rare:false},
+  {id:'watercress',name:'豆瓣菜',emoji:'🌿',cat:'蔬菜',anti:8,rare:true},
+  {id:'amaranth',name:'苋菜',emoji:'🌿',cat:'蔬菜',anti:7,rare:false},
+  {id:'water_spinach',name:'空心菜',emoji:'🌿',cat:'蔬菜',anti:6,rare:false},
+  {id:'cauliflower',name:'花椰菜',emoji:'🥦',cat:'蔬菜',anti:7,rare:false},
+  {id:'purple_cabbage',name:'紫甘蓝',emoji:'🫐',cat:'蔬菜',anti:9,rare:false},
+  {id:'bean_sprout',name:'黄豆芽',emoji:'🌱',cat:'蔬菜',anti:6,rare:false},
+  {id:'mung_sprout',name:'绿豆芽',emoji:'🌱',cat:'蔬菜',anti:5,rare:false},
+  {id:'chili_pepper',name:'辣椒',emoji:'🌶️',cat:'蔬菜',anti:8,rare:false},
+  {id:'garlic_bolt',name:'蒜苔',emoji:'🌿',cat:'蔬菜',anti:7,rare:false},
+  {id:'snow_pea',name:'荷兰豆',emoji:'🫛',cat:'蔬菜',anti:6,rare:false},
+  {id:'lettuce',name:'生菜',emoji:'🥬',cat:'蔬菜',anti:6,rare:false},
+  {id:'arugula',name:'芝麻菜',emoji:'🌿',cat:'蔬菜',anti:7,rare:true},
+  {id:'fennel',name:'茴香',emoji:'🌿',cat:'蔬菜',anti:7,rare:false},
+  {id:'okra',name:'秋葵',emoji:'🫛',cat:'蔬菜',anti:7,rare:false},
+  {id:'artichoke',name:'朝鲜蓟',emoji:'🌸',cat:'蔬菜',anti:9,rare:true},
+  {id:'burdock',name:'牛蒡',emoji:'🟤',cat:'蔬菜',anti:8,rare:true},
+  {id:'kohlrabi',name:'苤蓝',emoji:'🥬',cat:'蔬菜',anti:6,rare:false},
+  {id:'chinese_broccoli',name:'芥蓝',emoji:'🥦',cat:'蔬菜',anti:7,rare:false},
+  {id:'pea_shoots',name:'豌豆苗',emoji:'🌱',cat:'蔬菜',anti:7,rare:false},
+  {id:'purple_sweet_potato',name:'紫薯',emoji:'🟣',cat:'蔬菜',anti:9,rare:false},
+  {id:'winter_melon',name:'冬瓜',emoji:'🟢',cat:'蔬菜',anti:4,rare:false},
+  {id:'loofah',name:'丝瓜',emoji:'🥒',cat:'蔬菜',anti:5,rare:false},
+  {id:'endive',name:'苦苣',emoji:'🥬',cat:'蔬菜',anti:7,rare:true},
+  {id:'radicchio',name:'菊苣',emoji:'🔴',cat:'蔬菜',anti:8,rare:true},
+  {id:'swiss_chard',name:'甜菜叶',emoji:'🥬',cat:'蔬菜',anti:8,rare:true},
+  {id:'chrysanthemum_green',name:'茼蒿',emoji:'🌿',cat:'蔬菜',anti:7,rare:false},
+  {id:'water_bamboo',name:'茭白',emoji:'⚪',cat:'蔬菜',anti:5,rare:false},
+  {id:'chinese_spinach',name:'木耳菜',emoji:'🌿',cat:'蔬菜',anti:7,rare:false},
+  {id:'mushroom_shiitake',name:'香菇',emoji:'🍄',cat:'蔬菜',anti:8,rare:false},
+  {id:'apple',name:'苹果',emoji:'🍎',cat:'水果',anti:7,rare:false},
+  {id:'banana',name:'香蕉',emoji:'🍌',cat:'水果',anti:5,rare:false},
+  {id:'blueberry',name:'蓝莓',emoji:'🫐',cat:'水果',anti:10,rare:false},
+  {id:'strawberry',name:'草莓',emoji:'🍓',cat:'水果',anti:8,rare:false},
+  {id:'orange',name:'橙子',emoji:'🍊',cat:'水果',anti:7,rare:false},
+  {id:'grape',name:'葡萄',emoji:'🍇',cat:'水果',anti:8,rare:false},
+  {id:'mango',name:'芒果',emoji:'🥭',cat:'水果',anti:7,rare:false},
+  {id:'pomegranate',name:'石榴',emoji:'🔴',cat:'水果',anti:9,rare:true},
+  {id:'avocado',name:'牛油果',emoji:'🥑',cat:'水果',anti:8,rare:false},
+  {id:'kiwi',name:'猕猴桃',emoji:'🥝',cat:'水果',anti:8,rare:false},
+  {id:'watermelon',name:'西瓜',emoji:'🍉',cat:'水果',anti:6,rare:false},
+  {id:'peach',name:'桃子',emoji:'🍑',cat:'水果',anti:6,rare:false},
+  {id:'pear',name:'梨',emoji:'🍐',cat:'水果',anti:5,rare:false},
+  {id:'cherry',name:'樱桃',emoji:'🍒',cat:'水果',anti:8,rare:false},
+  {id:'lemon',name:'柠檬',emoji:'🍋',cat:'水果',anti:8,rare:false},
+  {id:'pineapple',name:'菠萝',emoji:'🍍',cat:'水果',anti:7,rare:false},
+  {id:'papaya',name:'木瓜',emoji:'🟠',cat:'水果',anti:7,rare:false},
+  {id:'dragon_fruit',name:'火龙果',emoji:'🔴',cat:'水果',anti:7,rare:false},
+  {id:'lychee',name:'荔枝',emoji:'🔴',cat:'水果',anti:6,rare:false},
+  {id:'longan',name:'龙眼',emoji:'🟤',cat:'水果',anti:6,rare:false},
+  {id:'fig',name:'无花果',emoji:'🟣',cat:'水果',anti:8,rare:true},
+  {id:'date',name:'红枣',emoji:'🔴',cat:'水果',anti:8,rare:false},
+  {id:'plum',name:'李子',emoji:'🟣',cat:'水果',anti:7,rare:false},
+  {id:'apricot',name:'杏子',emoji:'🟠',cat:'水果',anti:6,rare:false},
+  {id:'raspberry',name:'覆盆子',emoji:'🔴',cat:'水果',anti:9,rare:true},
+  {id:'blackberry',name:'黑莓',emoji:'🫐',cat:'水果',anti:9,rare:true},
+  {id:'cranberry',name:'蔓越莓',emoji:'🔴',cat:'水果',anti:9,rare:true},
+  {id:'mulberry',name:'桑葚',emoji:'🟣',cat:'水果',anti:9,rare:true},
+  {id:'guava',name:'番石榴',emoji:'🟢',cat:'水果',anti:7,rare:false},
+  {id:'passion_fruit',name:'百香果',emoji:'🟣',cat:'水果',anti:8,rare:false},
+  {id:'coconut',name:'椰子',emoji:'🥥',cat:'水果',anti:5,rare:false},
+  {id:'kumquat',name:'金橘',emoji:'🟠',cat:'水果',anti:7,rare:false},
+  {id:'pomelo',name:'柚子',emoji:'🟡',cat:'水果',anti:7,rare:false},
+  {id:'tangerine',name:'橘子',emoji:'🍊',cat:'水果',anti:7,rare:false},
+  {id:'lime',name:'青柠',emoji:'🍋',cat:'水果',anti:8,rare:false},
+  {id:'persimmon',name:'柿子',emoji:'🟠',cat:'水果',anti:7,rare:false},
+  {id:'hawthorn',name:'山楂',emoji:'🔴',cat:'水果',anti:8,rare:false},
+  {id:'bayberry',name:'杨梅',emoji:'🔴',cat:'水果',anti:8,rare:true},
+  {id:'mangosteen',name:'山竹',emoji:'🟣',cat:'水果',anti:8,rare:true},
+  {id:'plum_prune',name:'西梅',emoji:'🟣',cat:'水果',anti:8,rare:false},
+  {id:'nectarine',name:'油桃',emoji:'🍑',cat:'水果',anti:6,rare:false},
+  {id:'loquat',name:'枇杷',emoji:'🟡',cat:'水果',anti:7,rare:false},
+  {id:'jujube',name:'大枣',emoji:'🔴',cat:'水果',anti:8,rare:false},
+  {id:'grape_white',name:'青葡萄',emoji:'🟢',cat:'水果',anti:7,rare:false},
+  {id:'jackfruit',name:'菠萝蜜',emoji:'🟡',cat:'水果',anti:6,rare:false},
+  {id:'starfruit',name:'杨桃',emoji:'⭐',cat:'水果',anti:6,rare:false},
+  {id:'durian',name:'榴莲',emoji:'💛',cat:'水果',anti:4,rare:false},
+  {id:'rambutan',name:'红毛丹',emoji:'🔴',cat:'水果',anti:6,rare:false},
+  {id:'watermelon_yellow',name:'黄西瓜',emoji:'🟡',cat:'水果',anti:6,rare:false},
+  {id:'grape_purple',name:'紫葡萄',emoji:'🍇',cat:'水果',anti:8,rare:false},
+  {id:'walnut',name:'核桃',emoji:'🥜',walnutImg:true,cat:'坚果',anti:9,rare:false},
+  {id:'almond',name:'杏仁',emoji:'🌰',cat:'坚果',anti:8,rare:false},
+  {id:'flaxseed',name:'亚麻籽',emoji:'🌾',cat:'坚果',anti:9,rare:true},
+  {id:'chia',name:'奇亚籽',emoji:'🌾',cat:'坚果',anti:9,rare:true},
+  {id:'sunflower_seed',name:'葵花籽',emoji:'🌻',cat:'坚果',anti:7,rare:false},
+  {id:'pumpkin_seed',name:'南瓜子',emoji:'🎃',cat:'坚果',anti:7,rare:false},
+  {id:'cashew',name:'腰果',emoji:'🌰',cat:'坚果',anti:7,rare:false},
+  {id:'pistachio',name:'开心果',emoji:'🌰',cat:'坚果',anti:7,rare:false},
+  {id:'hazelnut',name:'榛子',emoji:'🌰',cat:'坚果',anti:7,rare:false},
+  {id:'macadamia',name:'夏威夷果',emoji:'🌰',cat:'坚果',anti:7,rare:false},
+  {id:'pecan',name:'碧根果',emoji:'🌰',cat:'坚果',anti:8,rare:false},
+  {id:'brazil_nut',name:'巴西坚果',emoji:'🌰',cat:'坚果',anti:8,rare:true},
+  {id:'pine_nut',name:'松子',emoji:'🌰',cat:'坚果',anti:8,rare:false},
+  {id:'sesame_white',name:'白芝麻',emoji:'⚪',cat:'坚果',anti:8,rare:false},
+  {id:'sesame_black',name:'黑芝麻',emoji:'⚫',cat:'坚果',anti:9,rare:false},
+  {id:'hemp_seed',name:'火麻仁',emoji:'🌿',cat:'坚果',anti:9,rare:true},
+  {id:'lotus_seed',name:'莲子',emoji:'⚪',cat:'坚果',anti:7,rare:false},
+  {id:'chestnut',name:'栗子',emoji:'🌰',cat:'坚果',anti:6,rare:false},
+  {id:'ginkgo',name:'银杏',emoji:'🟡',cat:'坚果',anti:7,rare:true},
+  {id:'perilla_seed',name:'紫苏籽',emoji:'🌿',cat:'坚果',anti:8,rare:true},
+  {id:'fenugreek_seed',name:'葫芦巴籽',emoji:'🟡',cat:'坚果',anti:8,rare:true},
+  {id:'nigella',name:'黑种草籽',emoji:'⚫',cat:'坚果',anti:8,rare:true},
+  {id:'watermelon_seed',name:'西瓜子',emoji:'🖤',cat:'坚果',anti:6,rare:false},
+  {id:'peanut',name:'花生',emoji:'🥜',cat:'坚果',anti:6,rare:false},
+  {id:'coriander_seed',name:'香菜籽',emoji:'🟡',cat:'坚果',anti:6,rare:false},
+  {id:'lentil',name:'扁豆',emoji:'🫘',cat:'豆类',anti:8,rare:false},
+  {id:'chickpea',name:'鹰嘴豆',emoji:'🫘',cat:'豆类',anti:8,rare:false},
+  {id:'soybean',name:'黄大豆',emoji:'🫘',cat:'豆类',anti:7,rare:false},
+  {id:'blackbean',name:'黑豆',emoji:'🫘',cat:'豆类',anti:8,rare:false},
+  {id:'pea',name:'豌豆',emoji:'🫛',cat:'豆类',anti:6,rare:false},
+  {id:'edamame',name:'毛豆',emoji:'🫛',cat:'豆类',anti:7,rare:false},
+  {id:'mung_bean',name:'绿豆',emoji:'🟢',cat:'豆类',anti:7,rare:false},
+  {id:'red_bean',name:'红豆',emoji:'🔴',cat:'豆类',anti:7,rare:false},
+  {id:'kidney_bean',name:'芸豆',emoji:'🔴',cat:'豆类',anti:7,rare:false},
+  {id:'adzuki',name:'赤小豆',emoji:'🔴',cat:'豆类',anti:8,rare:false},
+  {id:'broad_bean',name:'蚕豆',emoji:'🟢',cat:'豆类',anti:7,rare:false},
+  {id:'cowpea',name:'豇豆',emoji:'🫛',cat:'豆类',anti:7,rare:false},
+  {id:'navy_bean',name:'海军豆',emoji:'⚪',cat:'豆类',anti:7,rare:false},
+  {id:'pinto_bean',name:'斑豆',emoji:'🟤',cat:'豆类',anti:7,rare:false},
+  {id:'butter_bean',name:'黄油豆',emoji:'🟡',cat:'豆类',anti:7,rare:false},
+  {id:'lima_bean',name:'利马豆',emoji:'⚪',cat:'豆类',anti:6,rare:false},
+  {id:'winged_bean',name:'四棱豆',emoji:'🫛',cat:'豆类',anti:8,rare:true},
+  {id:'black_eyed_pea',name:'黑眼豆',emoji:'⚪',cat:'豆类',anti:7,rare:false},
+  {id:'snow_pea_pod',name:'甜豆荚',emoji:'🫛',cat:'豆类',anti:6,rare:false},
+  {id:'tofu_bean',name:'豆腐大豆',emoji:'🫘',cat:'豆类',anti:7,rare:false},
+  {id:'oat',name:'燕麦',emoji:'🌾',cat:'谷物',anti:8,rare:false},
+  {id:'quinoa',name:'藜麦',emoji:'🌾',cat:'谷物',anti:9,rare:true},
+  {id:'barley',name:'大麦',emoji:'🌾',cat:'谷物',anti:7,rare:false},
+  {id:'buckwheat',name:'荞麦',emoji:'🌾',cat:'谷物',anti:8,rare:false},
+  {id:'brown_rice',name:'糙米',emoji:'🍚',cat:'谷物',anti:6,rare:false},
+  {id:'millet',name:'小米',emoji:'🌾',cat:'谷物',anti:6,rare:false},
+  {id:'sorghum',name:'高粱',emoji:'🌾',cat:'谷物',anti:7,rare:false},
+  {id:'black_rice',name:'黑米',emoji:'⚫',cat:'谷物',anti:9,rare:false},
+  {id:'red_rice',name:'红米',emoji:'🔴',cat:'谷物',anti:8,rare:false},
+  {id:'purple_rice',name:'紫米',emoji:'🟣',cat:'谷物',anti:8,rare:false},
+  {id:'wheat_germ',name:'小麦胚芽',emoji:'🌾',cat:'谷物',anti:8,rare:true},
+  {id:'coix_seed',name:'薏米',emoji:'⚪',cat:'谷物',anti:8,rare:false},
+  {id:'amaranth_grain',name:'苋米',emoji:'🌾',cat:'谷物',anti:8,rare:true},
+  {id:'teff',name:'画眉草米',emoji:'🌾',cat:'谷物',anti:8,rare:true},
+  {id:'rye',name:'黑麦',emoji:'🌾',cat:'谷物',anti:7,rare:false},
+  {id:'farro',name:'法罗小麦',emoji:'🌾',cat:'谷物',anti:7,rare:true},
+  {id:'glutinous_rice',name:'糯米',emoji:'⚪',cat:'谷物',anti:4,rare:false},
+  {id:'corn_grits',name:'玉米糁',emoji:'🌽',cat:'谷物',anti:5,rare:false},
+  {id:'spelt',name:'斯佩耳特',emoji:'🌾',cat:'谷物',anti:7,rare:true},
+  {id:'corn_whole',name:'甜玉米粒',emoji:'🌽',cat:'谷物',anti:5,rare:false},
+  {id:'ginger',name:'生姜',emoji:'🫚',cat:'香料',anti:9,rare:false},
+  {id:'turmeric',name:'姜黄',emoji:'🟡',cat:'香料',anti:10,rare:true},
+  {id:'cinnamon',name:'肉桂',emoji:'🤎',cat:'香料',anti:8,rare:false},
+  {id:'coriander_herb',name:'香菜',emoji:'🌿',cat:'香料',anti:6,rare:false},
+  {id:'basil',name:'罗勒',emoji:'🌿',cat:'香料',anti:7,rare:true},
+  {id:'rosemary',name:'迷迭香',emoji:'🌿',cat:'香料',anti:8,rare:true},
+  {id:'mint',name:'薄荷',emoji:'🌿',cat:'香料',anti:7,rare:false},
+  {id:'scallion',name:'葱',emoji:'🌿',cat:'香料',anti:6,rare:false},
+  {id:'thyme',name:'百里香',emoji:'🌿',cat:'香料',anti:8,rare:true},
+  {id:'oregano',name:'牛至',emoji:'🌿',cat:'香料',anti:8,rare:true},
+  {id:'sage',name:'鼠尾草',emoji:'🌿',cat:'香料',anti:8,rare:true},
+  {id:'lavender',name:'薰衣草',emoji:'💜',cat:'香料',anti:7,rare:true},
+  {id:'black_pepper',name:'黑胡椒',emoji:'⚫',cat:'香料',anti:7,rare:false},
+  {id:'sichuan_pepper',name:'花椒',emoji:'🔴',cat:'香料',anti:7,rare:false},
+  {id:'star_anise',name:'八角',emoji:'🌟',cat:'香料',anti:6,rare:false},
+  {id:'cardamom',name:'豆蔻',emoji:'🟢',cat:'香料',anti:7,rare:true},
+  {id:'clove',name:'丁香',emoji:'🤎',cat:'香料',anti:8,rare:true},
+  {id:'cumin',name:'孜然',emoji:'🟡',cat:'香料',anti:7,rare:false},
+  {id:'saffron',name:'藏红花',emoji:'🟡',cat:'香料',anti:9,rare:true},
+  {id:'bay_leaf',name:'香叶',emoji:'🌿',cat:'香料',anti:6,rare:false},
+  {id:'lemongrass',name:'柠檬草',emoji:'🌿',cat:'香料',anti:7,rare:true},
+  {id:'galangal',name:'高良姜',emoji:'🟤',cat:'香料',anti:8,rare:true},
+  {id:'perilla',name:'紫苏叶',emoji:'🟣',cat:'香料',anti:8,rare:true},
+  {id:'dill',name:'莳萝',emoji:'🌿',cat:'香料',anti:6,rare:true},
+  {id:'tarragon',name:'龙蒿',emoji:'🌿',cat:'香料',anti:6,rare:true},
+  {id:'nutmeg',name:'肉豆蔻',emoji:'🟤',cat:'香料',anti:7,rare:true},
+  {id:'curry_leaf',name:'咖喱叶',emoji:'🌿',cat:'香料',anti:7,rare:true},
+  {id:'fenugreek_leaf',name:'葫芦巴叶',emoji:'🌿',cat:'香料',anti:7,rare:true},
+  {id:'szechuan_pepper',name:'青花椒',emoji:'🟢',cat:'香料',anti:7,rare:false},
+  {id:'paprika',name:'红椒粉',emoji:'🔴',cat:'香料',anti:7,rare:false},
+  {id:'shiitake',name:'香菇',emoji:'🍄',cat:'菌类',anti:8,rare:false},
+  {id:'oyster_mushroom',name:'平菇',emoji:'🍄',cat:'菌类',anti:7,rare:false},
+  {id:'reishi',name:'灵芝',emoji:'🍄',cat:'菌类',anti:10,rare:true},
+  {id:'king_oyster',name:'杏鲍菇',emoji:'🍄',cat:'菌类',anti:7,rare:false},
+  {id:'enoki',name:'金针菇',emoji:'🍄',cat:'菌类',anti:7,rare:false},
+  {id:'wood_ear',name:'木耳',emoji:'⚫',cat:'菌类',anti:8,rare:false},
+  {id:'snow_fungus',name:'银耳',emoji:'⚪',cat:'菌类',anti:8,rare:false},
+  {id:'button_mushroom',name:'口蘑',emoji:'🍄',cat:'菌类',anti:6,rare:false},
+  {id:'portobello',name:'大褐菇',emoji:'🍄',cat:'菌类',anti:7,rare:false},
+  {id:'lion_mane',name:'猴头菇',emoji:'🍄',cat:'菌类',anti:9,rare:true},
+  {id:'truffle',name:'松露',emoji:'🍄',cat:'菌类',anti:8,rare:true},
+  {id:'chanterelle',name:'鸡油菌',emoji:'🍄',cat:'菌类',anti:8,rare:true},
+  {id:'cordyceps',name:'虫草花',emoji:'🟡',cat:'菌类',anti:9,rare:true},
+  {id:'maitake',name:'舞茸',emoji:'🍄',cat:'菌类',anti:9,rare:true},
+  {id:'turkey_tail',name:'云芝',emoji:'🍄',cat:'菌类',anti:9,rare:true},
+  {id:'chaga',name:'白桦茸',emoji:'🍄',cat:'菌类',anti:9,rare:true},
+  {id:'porcini',name:'牛肝菌',emoji:'🍄',cat:'菌类',anti:8,rare:true},
+  {id:'matsutake',name:'松茸',emoji:'🍄',cat:'菌类',anti:9,rare:true},
+  {id:'nameko',name:'滑子菇',emoji:'🍄',cat:'菌类',anti:7,rare:false},
+  {id:'straw_mushroom',name:'草菇',emoji:'🍄',cat:'菌类',anti:6,rare:false},
+  {id:'green_tea',name:'绿茶',emoji:'🍵',cat:'茶饮',anti:9,rare:false},
+  {id:'matcha',name:'抹茶',emoji:'🍵',cat:'茶饮',anti:9,rare:false},
+  {id:'chamomile',name:'洋甘菊',emoji:'🌼',cat:'茶饮',anti:8,rare:true},
+  {id:'hibiscus',name:'洛神花',emoji:'🌺',cat:'茶饮',anti:8,rare:true},
+  {id:'black_tea',name:'红茶',emoji:'🍵',cat:'茶饮',anti:7,rare:false},
+  {id:'oolong',name:'乌龙茶',emoji:'🍵',cat:'茶饮',anti:8,rare:false},
+  {id:'white_tea',name:'白茶',emoji:'🍵',cat:'茶饮',anti:8,rare:true},
+  {id:'pu_erh',name:'普洱茶',emoji:'🟤',cat:'茶饮',anti:7,rare:false},
+  {id:'jasmine',name:'茉莉花',emoji:'🌸',cat:'茶饮',anti:7,rare:false},
+  {id:'chrysanthemum',name:'菊花',emoji:'🌼',cat:'茶饮',anti:7,rare:false},
+  {id:'rose_hip',name:'玫瑰果',emoji:'🌹',cat:'茶饮',anti:8,rare:true},
+  {id:'peppermint',name:'胡椒薄荷',emoji:'🌿',cat:'茶饮',anti:7,rare:false},
+  {id:'lemon_balm',name:'柠檬香蜂草',emoji:'🌿',cat:'茶饮',anti:7,rare:true},
+  {id:'rooibos',name:'路易波士',emoji:'🟤',cat:'茶饮',anti:8,rare:true},
+  {id:'elderflower',name:'接骨木花',emoji:'🌸',cat:'茶饮',anti:7,rare:true},
+  {id:'nettle',name:'荨麻茶',emoji:'🌿',cat:'茶饮',anti:8,rare:true},
+  {id:'dandelion',name:'蒲公英',emoji:'🌼',cat:'茶饮',anti:8,rare:true},
+  {id:'goji_tea',name:'枸杞茶',emoji:'🔴',cat:'茶饮',anti:9,rare:true},
+  {id:'longjing',name:'龙井茶',emoji:'🍵',cat:'茶饮',anti:9,rare:true},
+  {id:'osmanthus',name:'桂花',emoji:'🌸',cat:'茶饮',anti:7,rare:false},
+  {id:'kelp',name:'海带',emoji:'🌊',cat:'藻类',anti:8,rare:false},
+  {id:'nori',name:'紫菜',emoji:'🌊',cat:'藻类',anti:8,rare:false},
+  {id:'wakame',name:'裙带菜',emoji:'🌊',cat:'藻类',anti:8,rare:true},
+  {id:'spirulina',name:'螺旋藻',emoji:'🟢',cat:'藻类',anti:10,rare:true},
+  {id:'chlorella',name:'小球藻',emoji:'🟢',cat:'藻类',anti:9,rare:true},
+  {id:'sea_lettuce',name:'石莼',emoji:'🌊',cat:'藻类',anti:7,rare:true},
+  {id:'dulse',name:'红藻',emoji:'🔴',cat:'藻类',anti:8,rare:true},
+  {id:'agar',name:'琼脂',emoji:'⚪',cat:'藻类',anti:6,rare:true},
+  {id:'wolfberry',name:'枸杞',emoji:'🔴',cat:'特殊',anti:9,rare:true},
+  {id:'astragalus',name:'黄芪',emoji:'🟡',cat:'特殊',anti:9,rare:true},
+  {id:'ginseng',name:'人参',emoji:'🟤',cat:'特殊',anti:9,rare:true},
+  {id:'chinese_yam2',name:'淮山药',emoji:'🍠',cat:'特殊',anti:8,rare:true},
+  {id:'jujube_red',name:'红枣干',emoji:'🔴',cat:'特殊',anti:8,rare:false},
+  {id:'longan_dry',name:'桂圆干',emoji:'🟤',cat:'特殊',anti:7,rare:false},
+  {id:'mulberry_dry',name:'桑葚干',emoji:'🟣',cat:'特殊',anti:8,rare:true},
+  {id:'schisandra',name:'五味子',emoji:'🔴',cat:'特殊',anti:8,rare:true},
+  {id:'poria',name:'茯苓',emoji:'⚪',cat:'特殊',anti:7,rare:true},
+  {id:'codonopsis',name:'党参',emoji:'🟤',cat:'特殊',anti:8,rare:true},
+  {id:'hawthorn_dry',name:'山楂干',emoji:'🔴',cat:'特殊',anti:8,rare:false},
+  {id:'dendrobium',name:'石斛',emoji:'🌸',cat:'特殊',anti:8,rare:true},
+  {id:'chrysanthemum_flower',name:'杭白菊',emoji:'🌼',cat:'特殊',anti:7,rare:false},
+  {id:'snow_pear_dry',name:'雪梨干',emoji:'🍐',cat:'特殊',anti:6,rare:false},
+  {id:'longan_herb',name:'桂圆肉',emoji:'🟤',cat:'特殊',anti:7,rare:false}
+];
+
+const CREDIT_PACKS=[
+  {id:'starter',name:'入门包',credits:20,price:'¥3',desc:'每次仅¥0.15',featured:false},
+  {id:'popular',name:'常用包',credits:100,price:'¥9',desc:'最受欢迎',featured:true},
+  {id:'pro',name:'专业包',credits:300,price:'¥19',desc:'每次仅¥0.06',featured:false},
+];
+
+// Redeem codes
+var CODE_BANK={"VH-LDONOV":20,"VH-W4T9U9":20,"VH-DF6V70":20,"VH-5EGQ3P":20,"VH-YEGCH3":20,"VH-N89YKM":20,"VH-QAZU1I":20,"VH-H87EWU":20,"VH-T0GDCW":20,"VH-4MSB48":20,"VH-GAAWGS":100,"VH-00ATZ9":100,"VH-AAZN58":100,"VH-9FENS0":100,"VH-G51746":100,"VH-9R9UAR":100,"VH-LA3TFO":100,"VH-G4BUBY":100,"VH-DNQCBP":100,"VH-BRFVNG":100,"VH-RJ2JFV":300,"VH-JQYC5S":300,"VH-MDK04U":300,"VH-C6HPLS":300,"VH-XFL3DZ":300,"VH-ZEPHEW":300,"VH-GZYWOC":300,"VH-4C6Y4I":300,"VH-KFDIZF":300,"VH-JBO081":300};
+
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
+var S = {
+  profile: null,
+  coins: 0,
+  totalCoinsEarned: 0,
+  aiCredits: 5,
+  logs: {},
+  allUnlocked: [],
+  streak: 0,
+  maxStreak: 0,
+  lastCheckinDate: null,
+  weekBest: 0,
+  rareFound: 0,
+  earnedAchievements: [],
+  purchasedSkins: [],
+  activeSkin: null,
+  usedCodes: [],
+  friends: [],  // [{name, emoji, weekCount, streak}]
+};
+
+var pendingPlants = []; // plants pending save in modal
+var reportPeriod = 'day';
+
+// ═══════════════════════════════════════════════════
+// STORAGE
+// ═══════════════════════════════════════════════════
+var STORE_KEY = 'flora_planet_v1';
+function save(){
+  try{
+    var toSave = JSON.parse(JSON.stringify(S));
+    // Strip full-res photos from logs
+    Object.keys(toSave.logs||{}).forEach(function(k){
+      (toSave.logs[k]||[]).forEach(function(entry){
+        if(entry.photo) entry.photo = null;
+      });
+    });
+    localStorage.setItem(STORE_KEY, JSON.stringify(toSave));
+  }catch(e){ console.warn('Save error:', e); }
+}
+function load(){
+  try{
+    var d = localStorage.getItem(STORE_KEY);
+    if(d){
+      var p = JSON.parse(d);
+      Object.keys(p).forEach(function(k){ S[k] = p[k]; });
+    }
+  }catch(e){ console.warn('Load error:', e); }
+}
+
+// ═══════════════════════════════════════════════════
+// DATE UTILS
+// ═══════════════════════════════════════════════════
+function todayKey(){ return new Date().toISOString().split('T')[0]; }
+function daysAgo(n){ var d=new Date(); d.setDate(d.getDate()-n); return d.toISOString().split('T')[0]; }
+function weekStart(){
+  var d=new Date();
+  var day=d.getDay()||7;
+  d.setDate(d.getDate()-(day-1));
+  return d.toISOString().split('T')[0];
+}
+function fmtDate(){
+  var d=new Date();
+  return (d.getMonth()+1)+'月'+d.getDate()+'日 · 周'+'日一二三四五六'[d.getDay()];
+}
+
+// ═══════════════════════════════════════════════════
+// CALCULATIONS
+// ═══════════════════════════════════════════════════
+function getTodayPlants(){
+  var entries = S.logs[todayKey()] || [];
+  var plants = [];
+  entries.forEach(function(e){ plants = plants.concat(e.plants||[]); });
+  return plants;
+}
+
+function getWeekPlants(){
+  var ws = weekStart();
+  var plants = [];
+  Object.keys(S.logs).forEach(function(k){
+    if(k >= ws){
+      (S.logs[k]||[]).forEach(function(e){
+        plants = plants.concat(e.plants||[]);
+      });
+    }
+  });
+  return plants;
+}
+
+function getWeekUniqueCount(){
+  var plants = getWeekPlants();
+  var ids = {};
+  plants.forEach(function(p){ ids[p.id]=true; });
+  return Object.keys(ids).length;
+}
+
+function getTodayUniqueCount(){
+  var plants = getTodayPlants();
+  var ids = {};
+  plants.forEach(function(p){ ids[p.id]=true; });
+  return Object.keys(ids).length;
+}
+
+function calcDIIScore(plants){
+  if(!plants.length) return 50;
+  var total = 0;
+  plants.forEach(function(p){
+    var dbPlant = PLANT_DB.find(function(d){ return d.id===p.id; });
+    if(dbPlant) total += dbPlant.anti;
+  });
+  var avg = total / plants.length;
+  return Math.min(100, Math.round(avg * 10));
+}
+
+function getGuardianStage(){
+  var total = S.allUnlocked.length;
+  var stage = GUARDIAN_STAGES[0];
+  for(var i=GUARDIAN_STAGES.length-1;i>=0;i--){
+    if(total >= GUARDIAN_STAGES[i].minPlants){ stage=GUARDIAN_STAGES[i]; break; }
+  }
+  return stage;
+}
+
+function getStats(){
+  return {
+    totalUnique: S.allUnlocked.length,
+    totalCoins: S.coins,
+    maxStreak: S.maxStreak,
+    weekBest: S.weekBest,
+    rareFound: S.rareFound
+  };
+}
+
+// ═══════════════════════════════════════════════════
+// STREAK
+// ═══════════════════════════════════════════════════
+function updateStreak(){
+  var today = todayKey();
+  if(S.lastCheckinDate === today) return;
+  var yesterday = daysAgo(1);
+  if(S.lastCheckinDate === yesterday){
+    S.streak = (S.streak||0) + 1;
+  } else {
+    S.streak = 1;
+  }
+  S.maxStreak = Math.max(S.maxStreak||0, S.streak);
+  S.lastCheckinDate = today;
+}
+
+// ═══════════════════════════════════════════════════
+// COINS
+// ═══════════════════════════════════════════════════
+function awardCoins(amount, reason){
+  S.coins = (S.coins||0) + amount;
+  S.totalCoinsEarned = (S.totalCoinsEarned||0) + amount;
+  save();
+}
+
+// ═══════════════════════════════════════════════════
+// ONBOARDING
+// ═══════════════════════════════════════════════════
+function showOb(n){ [1,2,3].forEach(function(i){ document.getElementById('ob'+i).style.display=i===n?'block':'none'; }); }
+function ob2(){
+  var name=document.getElementById('o-name').value.trim();
+  var age=parseInt(document.getElementById('o-age').value);
+  var gender=document.getElementById('o-gender').value;
+  if(!name||!age||!gender){ alert('请填写所有信息'); return; }
+  S._ob={name:name,age:age,gender:gender};
+  showOb(2);
+}
+function ob3(){
+  showOb(3);
+}
+function finishOb(){
+  S.profile=Object.assign({},S._ob);
+  delete S._ob;
+  save();
+  document.getElementById('ob').classList.add('hide');
+  document.getElementById('app').classList.add('show');
+  initStars();
+  renderAll();
+}
+
+// ═══════════════════════════════════════════════════
+// STARS ANIMATION
+// ═══════════════════════════════════════════════════
+function initStars(){
+  ['hdr-stars','log-stars'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(!el) return;
+    el.innerHTML='';
+    for(var i=0;i<12;i++){
+      var s=document.createElement('div');
+      s.className='star';
+      s.style.cssText='width:'+(1+Math.random()*2)+'px;height:'+(1+Math.random()*2)+'px;left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;animation-delay:'+Math.random()*2+'s;animation-duration:'+(1.5+Math.random()*2)+'s';
+      el.appendChild(s);
+    }
+  });
+  // Ob stars
+  var ob=document.getElementById('ob-stars');
+  if(ob){
+    for(var i=0;i<20;i++){
+      var s=document.createElement('div');
+      s.className='star';
+      s.style.cssText='width:'+(1+Math.random()*3)+'px;height:'+(1+Math.random()*3)+'px;left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;animation-delay:'+Math.random()*3+'s;animation-duration:'+(1+Math.random()*3)+'s';
+      ob.appendChild(s);
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// PLANET ANIMATION
+// ═══════════════════════════════════════════════════
+function updatePlanet(){
+  var weekCount = getWeekUniqueCount();
+  var pct = Math.min(1, weekCount/30);
+  // Update green opacity
+  var green = document.getElementById('planet-green');
+  if(green) green.setAttribute('opacity', 0.1 + pct * 0.8);
+  // Update gradient
+  var pg1 = document.getElementById('pg1');
+  if(pg1){
+    var r = Math.round(82 + pct*(149-82));
+    var g2 = Math.round(145 + pct*(222-145));
+    var b = Math.round(122 + pct*(100-122));
+    pg1.setAttribute('stop-color','rgb('+r+','+g2+','+b+')');
+  }
+  // Update guardian on planet
+  var guardian = document.getElementById('planet-guardian');
+  if(guardian) guardian.textContent = getGuardianStage().emoji;
+  // Week progress
+  var fill = document.getElementById('week-prog-fill');
+  if(fill) fill.style.width = Math.min(100, Math.round(pct*100))+'%';
+  var frac = document.getElementById('week-fraction');
+  if(frac) frac.textContent = weekCount+'/30 种植物';
+  var cnt = document.getElementById('week-prog-count');
+  if(cnt) cnt.innerHTML = weekCount+' <span>/ 30种</span>';
+}
+
+// ═══════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════
+function goTo(screen){
+  ['home','log','report','rank','profile'].forEach(function(s){
+    document.getElementById('s-'+s).classList.toggle('on', s===screen);
+    document.getElementById('nb-'+s).classList.toggle('on', s===screen);
+  });
+  if(screen==='home') renderHome();
+  if(screen==='log') renderLog();
+  if(screen==='report') renderReport();
+  if(screen==='rank') renderRank();
+  if(screen==='profile') renderProfile();
+}
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+
+// ═══════════════════════════════════════════════════
+// RENDER HOME
+// ═══════════════════════════════════════════════════
+function renderHome(){
+  var stage = getGuardianStage();
+  var weekCount = getWeekUniqueCount();
+  var todayPlants = getTodayPlants();
+  var todayCount = getTodayUniqueCount();
+  var dii = calcDIIScore(todayPlants);
+  var p = S.profile;
+  var hr = new Date().getHours();
+
+  // Greeting
+  var greet = hr<12?'早上好':'hr'<18?'下午好':'晚上好';
+  if(hr>=18) greet='晚上好';
+  else if(hr>=12) greet='下午好';
+  document.getElementById('greeting').textContent = greet+'，'+p.name+' '+stage.emoji;
+  document.getElementById('hdr-date').textContent = fmtDate();
+  document.getElementById('coin-display').textContent = S.coins||0;
+
+  // Header stats
+  document.getElementById('hdr-stats').innerHTML =
+    '<div class="hdr-stat"><div class="hdr-stat-num">'+weekCount+'</div><div class="hdr-stat-lbl">本周植物</div></div>'+
+    '<div class="hdr-stat"><div class="hdr-stat-num" style="color:var(--gold)">'+(S.streak||0)+'</div><div class="hdr-stat-lbl">连续天数🔥</div></div>'+
+    '<div class="hdr-stat"><div class="hdr-stat-num" style="color:var(--green4)">'+S.allUnlocked.length+'</div><div class="hdr-stat-lbl">总种类</div></div>';
+
+  // Planet
+  updatePlanet();
+
+  // Streak row - last 7 days
+  var streakHtml = '';
+  var days = ['一','二','三','四','五','六','日'];
+  for(var i=6;i>=0;i--){
+    var dk = daysAgo(i);
+    var hasData = (S.logs[dk]||[]).length > 0;
+    var isToday = i===0;
+    var d = new Date(); d.setDate(d.getDate()-i);
+    var dayLabel = days[d.getDay()===0?6:d.getDay()-1];
+    streakHtml += '<div class="streak-day">'+
+      '<div class="streak-dot '+(isToday?'today':hasData?'done':'miss')+'">'+
+      (hasData?'✓':isToday?'·':'')+'</div>'+
+      '<span class="streak-day-lbl">'+dayLabel+'</span></div>';
+  }
+  document.getElementById('streak-row').innerHTML = streakHtml;
+
+  // Today plants
+  var tp = document.getElementById('today-plants');
+  document.getElementById('today-count').textContent = '('+todayCount+'种)';
+  if(!todayPlants.length){
+    tp.innerHTML = '<span style="font-size:13px;color:var(--t3);padding:4px 0">今天还没有打卡，去探索吧！</span>';
+  } else {
+    var seen = {};
+    var tags = '';
+    todayPlants.forEach(function(pl){
+      if(!seen[pl.id]){
+        seen[pl.id]=true;
+        tags += '<span class="plant-tag'+(pl.isNew?' new-plant':'')+'"><span class="pt-icon">'+(pl.id==="walnut"?'<img src="'+WALNUT_IMG+'" style="width:16px;height:16px;object-fit:contain;vertical-align:middle">':pl.emoji)+'</span>'+pl.name+'</span>';
+      }
+    });
+    tp.innerHTML = tags;
+  }
+
+  // DII card
+  var diiColor = dii>=80?'var(--green)':dii>=60?'var(--gold3)':'var(--red)';
+  var diiLabel = dii>=80?'优秀':dii>=60?'良好':'需改善';
+  var vegCount = todayPlants.filter(function(p){ var d=PLANT_DB.find(function(x){return x.id===p.id;}); return d&&d.cat==='蔬菜'; }).length;
+  var fruitCount = todayPlants.filter(function(p){ var d=PLANT_DB.find(function(x){return x.id===p.id;}); return d&&d.cat==='水果'; }).length;
+  var spiceCount = todayPlants.filter(function(p){ var d=PLANT_DB.find(function(x){return x.id===p.id;}); return d&&d.cat==='香料'; }).length;
+  document.getElementById('dii-card').innerHTML =
+    '<div class="dii-score">'+
+    '<div class="dii-circle" style="background:conic-gradient('+diiColor+' '+dii+'%, #EEE '+dii+'%)">'+
+    '<div class="dii-num" style="color:'+diiColor+'">'+dii+'</div>'+
+    '<div class="dii-lbl">/ 100</div>'+
+    '</div>'+
+    '<div class="dii-bars">'+
+    '<div style="font-size:14px;font-weight:700;color:var(--t1);margin-bottom:6px">抗炎指数 · '+diiLabel+'</div>'+
+    '<div class="dii-bar-row"><div class="dii-bar-lbl">蔬菜 '+vegCount+'种</div><div class="dii-bar-track"><div class="dii-bar-fill" style="width:'+Math.min(100,vegCount/5*100)+'%;background:var(--green3)"></div></div></div>'+
+    '<div class="dii-bar-row"><div class="dii-bar-lbl">水果 '+fruitCount+'种</div><div class="dii-bar-track"><div class="dii-bar-fill" style="width:'+Math.min(100,fruitCount/5*100)+'%;background:var(--gold)"></div></div></div>'+
+    '<div class="dii-bar-row"><div class="dii-bar-lbl">香料 '+spiceCount+'种</div><div class="dii-bar-track"><div class="dii-bar-fill" style="width:'+Math.min(100,spiceCount/3*100)+'%;background:var(--purple)"></div></div></div>'+
+    '</div></div>'+
+    (dii<80?'<div class="tip-box" style="margin-top:10px">'+getDIITip(todayPlants)+'</div>':'<div class="tip-box" style="margin-top:10px;border-left-color:var(--green)">✅ 今日抗炎饮食表现优秀！继续保持这种多样性。</div>');
+}
+
+function getDIITip(plants){
+  var cats = {};
+  plants.forEach(function(p){ var d=PLANT_DB.find(function(x){return x.id===p.id;}); if(d) cats[d.cat]=(cats[d.cat]||0)+1; });
+  if(!cats['蔬菜']) return '💡 今天还没有蔬菜，加入深色蔬菜（菠菜、西兰花）可大幅提升抗炎指数';
+  if(!cats['香料']) return '💡 姜黄、生姜等香料的抗炎效果极强，烹饪时加入可快速提升评分';
+  if(!cats['坚果']) return '💡 一把核桃或亚麻籽，omega-3脂肪酸是天然抗炎利器';
+  return '💡 增加植物种类多样性，每天尝试一种新食材';
+}
+
+// ═══════════════════════════════════════════════════
+// RENDER LOG
+// ═══════════════════════════════════════════════════
+function renderLog(){
+  var content = document.getElementById('log-content');
+  var html = '';
+  // Today
+  var todayEntries = S.logs[todayKey()] || [];
+  var todayPlants = getTodayPlants();
+  var seen = {};
+  var uniqueToday = [];
+  todayPlants.forEach(function(p){ if(!seen[p.id]){ seen[p.id]=true; uniqueToday.push(p); } });
+
+  html += '<div class="sec-ttl">今日打卡 ('+uniqueToday.length+'种)</div>';
+  if(!uniqueToday.length){
+    html += '<div class="sec-card"><div class="empty"><div class="empty-icon">🌱</div><div class="empty-txt">今天还没有打卡<br>拍张照片开始吧！</div></div></div>';
+  } else {
+    html += '<div class="sec-card">';
+    uniqueToday.forEach(function(pl){
+      var db = PLANT_DB.find(function(d){ return d.id===pl.id; });
+      html += '<div class="log-item">'+
+        '<div class="log-icon">'+(pl.id==="walnut"?'<img src="'+WALNUT_IMG+'" style="width:24px;height:24px;object-fit:contain">':pl.emoji)+'</div>'+
+        '<div class="log-body">'+
+        '<div class="log-name">'+pl.name+(db&&db.rare?' 💎':'')+' '+(pl.isNew?'<span style="background:var(--gold);color:var(--space);font-size:10px;padding:1px 6px;border-radius:6px;font-weight:800">新发现</span>':'')+'</div>'+
+        '<div class="log-meta">'+(db?db.cat:'植物')+' · 抗炎值 '+(db?db.anti:'-')+'/10</div>'+
+        '</div>'+
+        '<div class="log-pts">+'+pl.pts+' 🪙</div>'+
+        '</div>';
+    });
+    html += '</div>';
+  }
+
+  // Recent days
+  html += '<div class="sec-ttl">近期记录</div>';
+  var hasRecent = false;
+  for(var i=1;i<=6;i++){
+    var dk = daysAgo(i);
+    if(S.logs[dk]&&S.logs[dk].length){
+      hasRecent = true;
+      var plants = [];
+      S.logs[dk].forEach(function(e){ plants=plants.concat(e.plants||[]); });
+      var uq={};plants.forEach(function(p){uq[p.id]=p;});
+      var uqArr=Object.values(uq);
+      var d=new Date();d.setDate(d.getDate()-i);
+      var label=(d.getMonth()+1)+'月'+d.getDate()+'日';
+      html += '<div class="sec-card" style="margin-bottom:8px">'+
+        '<div style="font-size:13px;font-weight:700;color:var(--t2);margin-bottom:8px">'+label+' · '+uqArr.length+'种植物</div>'+
+        '<div style="display:flex;flex-wrap:wrap;gap:6px">'+
+        uqArr.map(function(pl){ return '<span style="background:rgba(27,67,50,.07);border-radius:20px;padding:3px 9px;font-size:12px;color:var(--green2)">'+(pl.id==="walnut"?'<img src="'+WALNUT_IMG+'" style="width:16px;height:16px;object-fit:contain;vertical-align:middle">':pl.emoji)+' '+pl.name+'</span>'; }).join('')+
+        '</div></div>';
+    }
+  }
+  if(!hasRecent) html += '<div class="sec-card"><div class="empty"><div class="empty-icon">📅</div><div class="empty-txt">还没有更多记录</div></div></div>';
+
+  content.innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════
+// RENDER ENCYCLOPEDIA
+// ═══════════════════════════════════════════════════
+function renderEncyc(){
+  var unlocked = S.allUnlocked||[];
+  document.getElementById('encyc-count').textContent = unlocked.length;
+  document.getElementById('encyc-subtitle').textContent = '已发现 '+unlocked.length+' / '+PLANT_DB.length+' 种';
+
+  var cats = {};
+  PLANT_DB.forEach(function(p){ if(!cats[p.cat]) cats[p.cat]=[]; cats[p.cat].push(p); });
+
+  var html = '';
+  Object.keys(cats).forEach(function(cat){
+    html += '<div style="font-size:12px;font-weight:700;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;margin-top:16px">'+cat+'</div>';
+    html += '<div class="encyc-grid">';
+    cats[cat].forEach(function(plant){
+      var isUnlocked = unlocked.indexOf(plant.id)>=0;
+      var isRecent = (S.logs[todayKey()]||[]).some(function(e){ return (e.plants||[]).some(function(p){ return p.id===plant.id; }); });
+      if(isUnlocked){
+        // Unlocked: full color + name
+        html += '<div class="encyc-item'+(isRecent?' new-badge':'')+'" style="position:relative">'+
+          '<div class="encyc-icon">'+(plant.id==="walnut"?'<img src="'+WALNUT_IMG+'" style="width:28px;height:28px;object-fit:contain">':plant.emoji)+'</div>'+
+          '<div class="encyc-name">'+plant.name+'</div>'+
+          '<div class="encyc-cat">'+(plant.rare?'💎稀有':'普通')+'</div>'+
+          '</div>';
+      } else {
+        // Locked: only lock icon, no plant emoji at all
+        html += '<div class="encyc-item" style="background:#F0F0F0;position:relative">'+
+          '<div style="font-size:28px;line-height:1;margin-bottom:4px;opacity:0.25">🔒</div>'+
+          '<div class="encyc-name" style="color:#ccc">???</div>'+
+          '<div class="encyc-cat" style="color:#ddd">未发现</div>'+
+          '</div>';
+      }
+    });
+    html += '</div>';
+  });
+  // ── 我的发现（数据库外的自定义植物）──
+  var customPlants = unlocked.filter(function(id){ return id.indexOf('custom_')===0; });
+  if(customPlants.length>0){
+    html += '<div style="font-size:12px;font-weight:700;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;margin-top:16px">🔍 我的独家发现</div>';
+    html += '<div style="font-size:12px;color:var(--t3);margin-bottom:10px">你发现的图鉴外植物，独一无二！</div>';
+    html += '<div class="encyc-grid">';
+    customPlants.forEach(function(id){
+      var name = id.replace('custom_','');
+      // Try to find it in all logged plants to get emoji
+      var foundEmoji = '🌿';
+      Object.keys(S.logs||{}).forEach(function(k){
+        (S.logs[k]||[]).forEach(function(e){
+          (e.plants||[]).forEach(function(p){
+            if(p.id===id && p.emoji) foundEmoji=p.emoji;
+          });
+        });
+      });
+      var isRecent = (S.logs[todayKey()]||[]).some(function(e){
+        return (e.plants||[]).some(function(p){ return p.id===id; });
+      });
+      html += '<div class="encyc-item'+(isRecent?' new-badge':'')+'" style="position:relative;border:1.5px dashed rgba(212,168,67,.4);background:rgba(212,168,67,.04)">'+
+        '<div class="encyc-icon">'+foundEmoji+'</div>'+
+        '<div class="encyc-name" style="color:var(--gold3)">'+name+'</div>'+
+        '<div class="encyc-cat" style="color:var(--gold3);font-size:9px">独家发现✨</div>'+
+        '</div>';
+    });
+    html += '</div>';
+  }
+
+  document.getElementById('encyc-content').innerHTML = html + '<div style="height:120px"></div>';
+}
+
+// ═══════════════════════════════════════════════════
+// RENDER REPORT
+// ═══════════════════════════════════════════════════
+function switchPeriod(p){
+  reportPeriod=p;
+  ['day','week','month'].forEach(function(x){ document.getElementById('pb-'+x).classList.toggle('on',x===p); });
+  renderReport();
+}
+
+function renderReport(){
+  var weekCount = getWeekUniqueCount();
+  var todayCount = getTodayUniqueCount();
+  var todayPlants = getTodayPlants();
+  var dii = calcDIIScore(todayPlants);
+
+  // Get period data
+  var keys = [];
+  var label = '';
+  if(reportPeriod==='day'){ keys=[todayKey()]; label='今日'; }
+  else if(reportPeriod==='week'){ for(var i=6;i>=0;i--)keys.push(daysAgo(i)); label='本周'; }
+  else{ for(var i=29;i>=0;i--)keys.push(daysAgo(i)); label='本月'; }
+
+  var allPlants = [];
+  keys.forEach(function(k){
+    (S.logs[k]||[]).forEach(function(e){ allPlants=allPlants.concat(e.plants||[]); });
+  });
+  var uniqueIds = {};
+  allPlants.forEach(function(p){ uniqueIds[p.id]=true; });
+  var uniqueCount = Object.keys(uniqueIds).length;
+  var avgDII = calcDIIScore(allPlants);
+  var recordDays = keys.filter(function(k){ return (S.logs[k]||[]).length>0; }).length;
+
+  // Score
+  var score = Math.min(100, Math.round(
+    (Math.min(30,uniqueCount)/30*50) +
+    (avgDII/100*30) +
+    (recordDays/keys.length*20)
+  ));
+  var scoreColor = score>=80?'var(--gold)':score>=60?'white':'rgba(255,255,255,.6)';
+  var scoreTxt = score>=80?'优秀 🏆':score>=60?'良好 ✨':score>=40?'继续加油 💪':'开始探索 🌱';
+
+  // Bar chart for week
+  var barChart = '';
+  if(keys.length>1){
+    var recent = keys.slice(-7);
+    var bars = recent.map(function(k){
+      var plants=[];(S.logs[k]||[]).forEach(function(e){plants=plants.concat(e.plants||[]);});
+      var uq={};plants.forEach(function(p){uq[p.id]=true;});
+      var count=Object.keys(uq).length;
+      var w=Math.min(100,Math.round(count/10*100));
+      var date=k.split('-').slice(1).join('/');
+      return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
+        '<div style="font-size:11px;color:var(--t2);min-width:30px;text-align:right">'+date+'</div>'+
+        '<div style="flex:1;height:22px;background:#F0F0F0;border-radius:4px;overflow:hidden">'+
+        '<div style="height:100%;width:'+w+'%;background:'+(count>=10?'var(--green2)':count>=5?'var(--gold)':'var(--t3)')+';border-radius:4px;display:flex;align-items:center;padding-left:6px">'+
+        '<span style="font-size:11px;font-weight:700;color:white">'+(count>0?count+'种':'')+'</span></div></div>'+
+        (count===0?'<span style="font-size:11px;color:var(--t3)">无记录</span>':'')+'</div>';
+    }).join('');
+    barChart = '<div class="sec-card"><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:12px">'+label+'植物种类</div>'+bars+'<div style="font-size:11px;color:var(--t3);margin-top:4px">每天目标：至少5种不同植物</div></div>';
+  }
+
+  document.getElementById('report-content').innerHTML =
+    '<div class="report-score-card">'+
+    '<div class="rsc-top">'+
+    '<div class="rsc-score-wrap"><div class="rsc-score" style="color:'+scoreColor+'">'+score+'</div><div class="rsc-label">'+label+'综合评分</div></div>'+
+    '<div><div style="font-size:15px;font-weight:700;margin-bottom:6px">'+scoreTxt+'</div>'+
+    '<div class="rsc-desc">'+getReportInsight(uniqueCount, avgDII, recordDays, keys.length)+'</div></div>'+
+    '</div>'+
+    '<button onclick="showWeekReward()" style="width:100%;background:rgba(212,168,67,.2);border:1px solid rgba(212,168,67,.3);border-radius:10px;padding:10px;color:var(--gold2);font-size:13px;font-weight:700;font-family:inherit;cursor:pointer">查看激励评语 ✨</button>'+
+    '</div>'+
+
+    '<div class="report-grid">'+
+    '<div class="rg-item"><div class="rg-lbl">不同植物</div><div class="rg-val" style="color:var(--green)">'+uniqueCount+'</div><div class="rg-sub">'+(reportPeriod==='week'?'目标30种':'本'+{'day':'日','week':'周','month':'月'}[reportPeriod])+'</div></div>'+
+    '<div class="rg-item"><div class="rg-lbl">抗炎指数</div><div class="rg-val" style="color:'+(avgDII>=80?'var(--green)':avgDII>=60?'var(--gold3)':'var(--red)')+'">'+avgDII+'</div><div class="rg-sub">满分100</div></div>'+
+    '<div class="rg-item"><div class="rg-lbl">打卡天数</div><div class="rg-val" style="color:var(--gold3)">'+recordDays+'</div><div class="rg-sub">共'+keys.length+'天</div></div>'+
+    '<div class="rg-item"><div class="rg-lbl">累计植物</div><div class="rg-val" style="color:var(--green2)">'+S.allUnlocked.length+'</div><div class="rg-sub">图鉴进度</div></div>'+
+    '</div>'+
+    barChart+
+    '<div class="sec-ttl">科学解读</div>'+
+    '<div class="sec-card">'+getScienceInsights(uniqueCount,avgDII,recordDays,keys.length).map(function(ins){
+      return '<div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="font-size:18px;width:24px;flex-shrink:0">'+ins.icon+'</div><div style="font-size:13px;color:var(--t2);line-height:1.5">'+ins.text+'</div></div>';
+    }).join('')+'</div>';
+}
+
+function getReportInsight(unique, dii, days, total){
+  if(unique>=30) return '恭喜！本周植物多样性达标，肠道菌群正在多样化 🎉';
+  if(unique>=20) return '很棒！再加'+( 30-unique)+'种就达到每周30种的目标了';
+  if(unique>=10) return '有进步！每天尝试2-3种新植物，本周就能达标';
+  return '刚刚起步，每一种新植物都是对肠道菌群的礼物';
+}
+
+function getScienceInsights(unique, dii, days, total){
+  var ins = [];
+  if(unique>=30) ins.push({icon:'🧬',text:'每周30种植物已达标！研究显示你的肠道菌群多样性比平均水平高40%（美国肠道菌群项目，10,000+参与者）'});
+  else ins.push({icon:'🌱',text:'目前'+unique+'种，距30种目标还差'+(30-unique)+'种。每周超过25种植物的人，报告炎症指标显著改善'});
+  if(dii>=80) ins.push({icon:'🔥',text:'抗炎指数优秀！姜黄、深色浆果、叶类蔬菜是你的功臣，继续保持'});
+  else ins.push({icon:'💊',text:'提升抗炎指数最快的方法：加入姜黄（评分+10）、蓝莓（+10）、绿叶蔬菜（每种+8）'});
+  if(days>=total*0.8) ins.push({icon:'⭐',text:'打卡坚持率优秀（'+days+'/'+total+'天）！研究表明持续记录饮食的人，饮食质量平均比不记录者好23%'});
+  else ins.push({icon:'📅',text:'增加打卡频率能帮助养成习惯。建议每餐拍一张照片，哪怕只有一种植物也算'});
+  return ins;
+}
+
+// ═══════════════════════════════════════════════════
+// RENDER PROFILE
+// ═══════════════════════════════════════════════════
+function renderProfile(){
+  var stage = getGuardianStage();
+  var p = S.profile;
+  var stats = getStats();
+
+  document.getElementById('profile-guardian').textContent = stage.emoji;
+  document.getElementById('guardian-level').textContent = 'Lv.'+(GUARDIAN_STAGES.indexOf(stage)+1);
+  document.getElementById('profile-name').textContent = p.name;
+  document.getElementById('profile-title').textContent = stage.title;
+
+  document.getElementById('profile-stats').innerHTML =
+    '<div class="stat-box"><div class="stat-num">'+S.allUnlocked.length+'</div><div class="stat-lbl">累计植物种类</div></div>'+
+    '<div class="stat-box"><div class="stat-num" style="color:var(--gold)">'+S.coins+'</div><div class="stat-lbl">🪙 植物币</div></div>'+
+    '<div class="stat-box"><div class="stat-num" style="color:var(--green3)">'+(S.streak||0)+'</div><div class="stat-lbl">🔥 连续天数</div></div>';
+
+  // Achievements
+  var badgesHtml = '<div class="achievements-grid">';
+  ACHIEVEMENTS.forEach(function(ach){
+    var earned = S.earnedAchievements&&S.earnedAchievements.indexOf(ach.id)>=0;
+    badgesHtml += '<div class="badge-item">'+
+      '<div class="badge-icon '+(earned?'earned':'locked')+'">'+ach.icon+'</div>'+
+      '<div class="badge-name">'+ach.name+'</div>'+
+      '</div>';
+  });
+  badgesHtml += '</div>';
+  document.getElementById('badges-card').innerHTML = badgesHtml;
+
+  // Shop
+  var shopHtml = '';
+  SHOP_ITEMS.forEach(function(item){
+    var canBuy = (S.coins||0) >= item.cost;
+    shopHtml += '<div class="shop-item">'+
+      '<div class="shop-icon">'+item.icon+'</div>'+
+      '<div class="shop-body"><div class="shop-name">'+item.name+'</div><div class="shop-desc">'+item.desc+'</div></div>'+
+      '<button class="shop-btn" onclick="buyShopItem(\''+item.id+'\')" '+(canBuy?'':'disabled')+'>'+item.cost+' 🪙</button>'+
+      '</div>';
+  });
+  document.getElementById('coin-shop').innerHTML = shopHtml;
+}
+
+// ═══════════════════════════════════════════════════
+// CHECKIN MODAL
+// ═══════════════════════════════════════════════════
+function openCheckinModal(){
+  pendingPlants = [];
+  document.getElementById('manual-plant').value='';
+  document.getElementById('manual-suggest').innerHTML='';
+  document.getElementById('save-checkin-btn').style.display='none';
+  updatePendingPlantsUI();
+  document.getElementById('checkin-modal').classList.add('open');
+}
+function closeCheckinModal(){ document.getElementById('checkin-modal').classList.remove('open'); }
+// Photo functions removed - manual input only
+
+// Manual plant entry
+function updateManualSuggest(){
+  var val = document.getElementById('manual-plant').value.trim();
+  var suggest = document.getElementById('manual-suggest');
+  if(!val){ suggest.innerHTML=''; return; }
+  var matches = PLANT_DB.filter(function(p){ return p.name.indexOf(val)>=0; }).slice(0,6);
+  if(!matches.length){ suggest.innerHTML=''; return; }
+  suggest.innerHTML = matches.map(function(p){
+    return '<button onclick="selectSuggest(\''+p.id+'\')" style="background:rgba(27,67,50,.08);border:1px solid rgba(27,67,50,.15);border-radius:20px;padding:4px 10px;font-size:12px;color:var(--green);font-family:inherit;cursor:pointer">'+p.emoji+' '+p.name+'</button>';
+  }).join('');
+}
+
+function selectSuggest(id){
+  var plant = PLANT_DB.find(function(p){ return p.id===id; });
+  if(!plant) return;
+  document.getElementById('manual-plant').value='';
+  document.getElementById('manual-suggest').innerHTML='';
+  var isNew = (S.allUnlocked||[]).indexOf(id)<0;
+  addToPending({id:plant.id,name:plant.name,emoji:plant.emoji,cat:plant.cat,anti:plant.anti,isNew:isNew,rare:plant.rare,pts:isNew?(plant.rare?30:10):3});
+}
+
+function addManualPlant(){
+  var val = document.getElementById('manual-plant').value.trim();
+  if(!val) return;
+  // Try to match DB
+  var dbMatch = PLANT_DB.find(function(p){ return p.name===val||p.name.indexOf(val)>=0||val.indexOf(p.name)>=0; });
+  var id = dbMatch?dbMatch.id:('custom_'+val);
+  var isNew = (S.allUnlocked||[]).indexOf(id)<0;
+  addToPending({
+    id:id, name:dbMatch?dbMatch.name:val,
+    emoji:dbMatch?dbMatch.emoji:'🌿',
+    cat:dbMatch?dbMatch.cat:'植物',
+    anti:dbMatch?dbMatch.anti:5,
+    isNew:isNew, rare:dbMatch?dbMatch.rare:false,
+    pts:isNew?10:3
+  });
+  document.getElementById('manual-plant').value='';
+  document.getElementById('manual-suggest').innerHTML='';
+}
+
+function addToPending(plant){
+  // Avoid duplicates in pending
+  if(pendingPlants.find(function(p){ return p.id===plant.id; })) return;
+  pendingPlants.push(plant);
+  updatePendingPlantsUI();
+}
+
+function removePending(id){
+  pendingPlants = pendingPlants.filter(function(p){ return p.id!==id; });
+  updatePendingPlantsUI();
+}
+
+function updatePendingPlantsUI(){
+  var el = document.getElementById('pending-plants');
+  var saveBtn = document.getElementById('save-checkin-btn');
+  if(!pendingPlants.length){
+    el.innerHTML = '';
+    saveBtn.style.display='none';
+    return;
+  }
+  var totalPts = pendingPlants.reduce(function(s,p){ return s+p.pts; }, 0);
+  var html = '<div style="background:rgba(27,67,50,.04);border-radius:12px;padding:12px;margin-bottom:8px">'+
+    '<div style="font-size:12px;font-weight:700;color:var(--green);margin-bottom:8px">待保存 ('+pendingPlants.length+'种 · +'+totalPts+' 🪙)</div>'+
+    '<div style="display:flex;flex-wrap:wrap;gap:6px">';
+  pendingPlants.forEach(function(pl){
+    html += '<span style="background:white;border:1px solid var(--border);border-radius:20px;padding:4px 8px;font-size:12px;display:inline-flex;align-items:center;gap:4px">'+
+      (pl.id==="walnut"?'<img src="'+WALNUT_IMG+'" style="width:16px;height:16px;object-fit:contain;vertical-align:middle">':pl.emoji)+' '+pl.name+
+      (pl.isNew?'<span style="background:var(--gold);color:var(--space);font-size:9px;padding:1px 4px;border-radius:4px;font-weight:800">新</span>':'')+
+      '<span onclick="removePending(\''+pl.id+'\')" style="color:var(--t3);cursor:pointer;margin-left:2px">×</span>'+
+      '</span>';
+  });
+  html += '</div></div>';
+  el.innerHTML = html;
+  saveBtn.style.display = 'block';
+}
+
+function saveCheckin(){
+  if(!pendingPlants.length) return;
+  var today = todayKey();
+  if(!S.logs[today]) S.logs[today]=[];
+
+  var totalPts = 0;
+  var newPlants = [];
+
+  pendingPlants.forEach(function(pl){
+    if((S.allUnlocked||[]).indexOf(pl.id)<0){
+      if(!S.allUnlocked) S.allUnlocked=[];
+      S.allUnlocked.push(pl.id);
+      newPlants.push(pl);
+      if(pl.rare) S.rareFound = (S.rareFound||0)+1;
+    }
+    totalPts += pl.pts;
+  });
+
+  S.logs[today].push({plants:pendingPlants, timestamp:Date.now()});
+
+  // Award coins
+  awardCoins(totalPts, '植物打卡');
+
+  // Streak bonus
+  var weekCount = getWeekUniqueCount();
+  if(weekCount===30 && (S.weekBest||0)<30){
+    awardCoins(200, '完成每周30种挑战');
+    S.weekBest = 30;
+  }
+
+  updateStreak();
+  if(S.streak===7) awardCoins(100,'连续7天');
+  if(S.streak===30) awardCoins(500,'连续30天');
+
+  // Check achievements
+  checkAchievements();
+
+  save();
+  closeCheckinModal();
+
+  // Show reward popup
+  showCheckinReward(newPlants, totalPts, weekCount);
+
+  // Re-render
+  renderHome();
+  updatePlanet();
+}
+
+function showCheckinReward(newPlants, pts, weekCount){
+  var emoji, title, text;
+  if(newPlants.length>0&&newPlants.some(function(p){return p.rare;})){
+    emoji='💎'; title='稀有植物！'; text='你发现了稀有植物，图鉴+1，植物星球进化了！';
+  } else if(newPlants.length>2){
+    emoji='🌟'; title='多种新植物！'; text='今天发现了'+newPlants.length+'种新植物，星球正在生长！';
+  } else if(newPlants.length>0){
+    emoji=newPlants[0].emoji; title='新植物发现！'; text=newPlants[0].name+'已加入你的图鉴！';
+  } else {
+    emoji='✅'; title='打卡成功！'; text='保持多样性，每天都有新发现！';
+  }
+  if(weekCount>=30){ emoji='🏆'; title='本周达成30种！'; text='太厉害了！肠道菌群正在感谢你 🧬'; pts+=200; }
+
+  document.getElementById('reward-emoji').textContent = emoji;
+  document.getElementById('reward-title').textContent = title;
+  document.getElementById('reward-coins').textContent = '+'+pts+' 🪙';
+  document.getElementById('reward-text').textContent = text;
+  document.getElementById('reward-overlay').classList.add('open');
+}
+
+function closeReward(){ document.getElementById('reward-overlay').classList.remove('open'); }
+
+function showWeekReward(){
+  var weekCount = getWeekUniqueCount();
+  var score = Math.min(100,Math.round((Math.min(30,weekCount)/30*100)));
+  var messages = score>=80?
+    [{e:'🌍',t:'星球达人！',d:'你的星球正在茂盛生长，肠道菌群感谢你的多样饮食！'}]:
+    score>=50?
+    [{e:'🌿',t:'稳步前进！',d:'继续探索更多植物，星球在等待你的关爱！'}]:
+    [{e:'🌱',t:'星球等你！',d:'你的星球还很年轻，每一种新植物都让它更强大！'}];
+  var m = messages[0];
+  document.getElementById('reward-emoji').textContent = m.e;
+  document.getElementById('reward-title').textContent = m.t;
+  document.getElementById('reward-coins').textContent = score+' 分';
+  document.getElementById('reward-text').textContent = m.d;
+  document.getElementById('reward-overlay').classList.add('open');
+}
+
+// ═══════════════════════════════════════════════════
+// ACHIEVEMENTS
+// ═══════════════════════════════════════════════════
+function checkAchievements(){
+  var stats = getStats();
+  ACHIEVEMENTS.forEach(function(ach){
+    if((S.earnedAchievements||[]).indexOf(ach.id)>=0) return;
+    if(ach.check(stats)){
+      if(!S.earnedAchievements) S.earnedAchievements=[];
+      S.earnedAchievements.push(ach.id);
+      awardCoins(50, '成就：'+ach.name);
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════
+// SHOP
+// ═══════════════════════════════════════════════════
+function buyShopItem(id){
+  var item = SHOP_ITEMS.find(function(i){ return i.id===id; });
+  if(!item) return;
+  if((S.coins||0)<item.cost){ alert('植物币不足！继续打卡赚取更多 🪙'); return; }
+  if(confirm('确认购买 '+item.name+' ('+item.cost+' 🪙)？')){
+    S.coins -= item.cost;
+    if(item.type==='skin'){
+      if(!S.purchasedSkins) S.purchasedSkins=[];
+      S.purchasedSkins.push(item.id);
+    }
+    save();
+    renderProfile();
+    alert('✅ 购买成功！'+item.name+' 已到账');
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// RANK & SHARE
+// ═══════════════════════════════════════════════════
+function renderRank(){
+  var weekCount = getWeekUniqueCount();
+  var dii = calcDIIScore(getWeekPlants());
+  var stage = getGuardianStage();
+
+  // Update share card preview
+  document.getElementById('share-guardian-emoji').textContent = stage.emoji;
+  document.getElementById('share-name').textContent = S.profile.name;
+  document.getElementById('share-title-txt').textContent = stage.title;
+  document.getElementById('share-week-count').textContent = weekCount;
+  document.getElementById('share-dii').textContent = dii;
+  document.getElementById('share-streak').textContent = S.streak||0;
+
+  // Build leaderboard - me + friends
+  var me = {name:S.profile.name+'（我）', emoji:stage.emoji, weekCount:weekCount, streak:S.streak||0, isMe:true};
+  var friends = S.friends||[];
+  var all = [me].concat(friends);
+  all.sort(function(a,b){ return b.weekCount - a.weekCount; });
+
+  var lbHtml = '';
+  if(all.length<=1){
+    lbHtml = '<div class="empty"><div class="empty-icon">🏆</div>'+
+      '<div class="empty-txt">还没有好友数据<br>点右上角"+ 添加好友"邀请朋友一起挑战！</div></div>';
+  } else {
+    all.forEach(function(p, i){
+      var rank = i+1;
+      var rankClass = rank===1?'r1':rank===2?'r2':rank===3?'r3':'';
+      var rankIcon = rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
+      lbHtml += '<div class="lb-item">'+
+        '<div class="lb-rank '+rankClass+'">'+rankIcon+'</div>'+
+        '<div class="lb-avatar'+(p.isMe?' me':'')+'">'+p.emoji+'</div>'+
+        '<div class="lb-body">'+
+        '<div class="lb-name">'+p.name+'</div>'+
+        '<div class="lb-sub">🔥 连击 '+p.streak+' 天</div>'+
+        '</div>'+
+        '<div class="lb-score">'+p.weekCount+'<span> 种</span></div>'+
+        '</div>';
+    });
+    // Add motivation
+    var myRank = all.findIndex(function(p){return p.isMe;})+1;
+    if(myRank===1){
+      lbHtml += '<div style="text-align:center;padding:12px;font-size:13px;color:var(--green);font-weight:700">🎉 你是本周植物冠军！</div>';
+    } else {
+      var ahead = all[myRank-2];
+      var diff = ahead.weekCount - weekCount;
+      lbHtml += '<div style="text-align:center;padding:12px;font-size:13px;color:var(--t2)">💪 再吃 '+diff+' 种就能超过 '+ahead.name.replace('（我）','')+'！</div>';
+    }
+  }
+  document.getElementById('lb-content').innerHTML = lbHtml;
+}
+
+function openAddFriend(){
+  var name = prompt('好友昵称：');
+  if(!name||!name.trim()) return;
+  var weekCount = parseInt(prompt(name+' 本周吃了几种植物？'));
+  if(isNaN(weekCount)||weekCount<0) return;
+  var streak = parseInt(prompt(name+' 连续打卡几天？（不知道填0）')||'0')||0;
+  var emojis = ['🌟','💚','🌸','🦋','🌈','⭐','🍀','🌺'];
+  var emoji = emojis[Math.floor(Math.random()*emojis.length)];
+  if(!S.friends) S.friends=[];
+  S.friends.push({name:name.trim(), emoji:emoji, weekCount:weekCount, streak:streak, isMe:false});
+  save();
+  renderRank();
+  alert('✅ 已添加 '+name+' 到排行榜！');
+}
+
+function copyShareText(){
+  var weekCount = getWeekUniqueCount();
+  var dii = calcDIIScore(getWeekPlants());
+  var stage = getGuardianStage();
+  var lines = [
+    '🌍 植物星球 · 本周战报',
+    '',
+    stage.emoji+' '+S.profile.name+' · '+stage.title,
+    '',
+    '🌿 本周植物：'+weekCount+'/30 种',
+    '🔥 抗炎指数：'+dii+'/100',
+    '⚡ 连击天数：'+(S.streak||0)+' 天',
+    '📚 图鉴收集：'+S.allUnlocked.length+' 种',
+    '',
+    weekCount>=30?'🏆 本周完成30种挑战！':'💪 距30种目标还差'+(30-weekCount)+'种，加油！',
+    '',
+    '每周吃30种植物，让你的肠道菌群多样化 🧬',
+    '#植物星球 #每周30种植物'
+  ];
+  var text = lines.join('\n');
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(text).then(function(){
+      alert('✅ 已复制！可以直接粘贴到朋友圈或微信');
+    });
+  } else {
+    prompt('复制以下内容：', text);
+  }
+}
+
+function saveShareCard(){
+  var canvas = document.createElement('canvas');
+  canvas.width = 640;
+  canvas.height = 800;
+  var ctx = canvas.getContext('2d');
+
+  // Background gradient
+  var grad = ctx.createLinearGradient(0, 0, 640, 800);
+  grad.addColorStop(0, '#0A1628');
+  grad.addColorStop(0.5, '#0D2137');
+  grad.addColorStop(1, '#1B4332');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 640, 800);
+
+  // Stars
+  ctx.fillStyle = 'rgba(255,255,255,0.6)';
+  for(var i=0;i<40;i++){
+    var x=Math.random()*640, y=Math.random()*800, r=Math.random()*2;
+    ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
+  }
+
+  // Logo
+  ctx.font = '600 13px -apple-system,sans-serif';
+  ctx.fillStyle = 'rgba(255,255,255,0.4)';
+  ctx.letterSpacing = '4px';
+  ctx.textAlign = 'center';
+  ctx.fillText('植物星球 · FLORA PLANET', 320, 54);
+
+  // Guardian emoji
+  ctx.font = '80px serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(getGuardianStage().emoji, 320, 160);
+
+  // Name
+  ctx.font = 'bold 28px -apple-system,PingFang SC,sans-serif';
+  ctx.fillStyle = 'white';
+  ctx.fillText(S.profile.name, 320, 210);
+
+  // Title
+  ctx.font = '16px -apple-system,PingFang SC,sans-serif';
+  ctx.fillStyle = '#D4A843';
+  ctx.fillText(getGuardianStage().title, 320, 240);
+
+  // Week count big number
+  var weekCount = getWeekUniqueCount();
+  var dii = calcDIIScore(getWeekPlants());
+
+  // Stats boxes
+  var stats = [
+    {label:'本周植物', value:weekCount+'种', color:'#D4A843'},
+    {label:'抗炎指数', value:dii, color:'#95DE64'},
+    {label:'连击天数', value:(S.streak||0)+'天', color:'#FFD166'},
+  ];
+  stats.forEach(function(s, i){
+    var x = 80 + i*190;
+    // Box
+    ctx.fillStyle = 'rgba(255,255,255,0.08)';
+    roundRect(ctx, x, 280, 160, 100, 14);
+    ctx.fill();
+    // Value
+    ctx.font = 'bold 32px -apple-system,PingFang SC,sans-serif';
+    ctx.fillStyle = s.color;
+    ctx.textAlign = 'center';
+    ctx.fillText(s.value, x+80, 335);
+    // Label
+    ctx.font = '13px -apple-system,PingFang SC,sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.fillText(s.label, x+80, 358);
+  });
+
+  // Progress bar
+  ctx.fillStyle = 'rgba(255,255,255,0.1)';
+  roundRect(ctx, 80, 420, 480, 12, 6);
+  ctx.fill();
+  var pct = Math.min(1, weekCount/30);
+  ctx.fillStyle = '#52917A';
+  roundRect(ctx, 80, 420, Math.max(12, 480*pct), 12, 6);
+  ctx.fill();
+  ctx.font = '13px -apple-system,PingFang SC,sans-serif';
+  ctx.fillStyle = 'rgba(255,255,255,0.6)';
+  ctx.textAlign = 'center';
+  ctx.fillText('每周30种植物挑战 · '+weekCount+'/30', 320, 456);
+
+  // Plant tags (top 8 this week)
+  var weekPlants = getWeekPlants();
+  var seen={}, tags=[];
+  weekPlants.forEach(function(p){ if(!seen[p.id]&&tags.length<8){seen[p.id]=true;tags.push(p);} });
+  ctx.font = '16px serif';
+  var tagX = 80, tagY = 490;
+  tags.forEach(function(p){
+    ctx.fillStyle = 'rgba(255,255,255,0.08)';
+    var w = 64;
+    roundRect(ctx, tagX, tagY, w, 34, 8);
+    ctx.fill();
+    ctx.font = '18px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(p.emoji, tagX+32, tagY+24);
+    tagX += 74;
+    if(tagX > 520){ tagX=80; tagY+=44; }
+  });
+
+  // Bottom message
+  ctx.font = '14px -apple-system,PingFang SC,sans-serif';
+  ctx.fillStyle = 'rgba(255,255,255,0.4)';
+  ctx.textAlign = 'center';
+  ctx.fillText('为肠道菌群而吃 · 每天打卡植物多样性', 320, 720);
+  ctx.fillText('#植物星球 #每周30种植物 #抗炎饮食', 320, 748);
+
+  // Save
+  canvas.toBlob(function(blob){
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = '植物星球_本周战报.png';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+}
+
+function roundRect(ctx, x, y, w, h, r){
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.lineTo(x+w-r, y);
+  ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+  ctx.lineTo(x+w, y+h-r);
+  ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+  ctx.lineTo(x+r, y+h);
+  ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+  ctx.lineTo(x, y+r);
+  ctx.quadraticCurveTo(x, y, x+r, y);
+  ctx.closePath();
+}
+
+// ═══════════════════════════════════════════════════
+// SETTINGS
+// ═══════════════════════════════════════════════════
+
+function resetAccount(){
+  if(confirm('⚠️ 确定重置？\n\n这将清除所有数据包括植物图鉴、积分和记录。\n\n此操作不可恢复。')){
+    try{ localStorage.removeItem(STORE_KEY); }catch(e){}
+    location.reload();
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+function renderAll(){
+  renderHome();
+  initStars();
+}
+
+load();
+if(S.profile){
+  document.getElementById('ob').classList.add('hide');
+  document.getElementById('app').classList.add('show');
+  renderAll();
+} else {
+  initStars();
+}
+
+document.querySelectorAll('.modal').forEach(function(m){
+  m.addEventListener('click', function(e){ if(e.target===m) m.classList.remove('open'); });
+});
+</script>
+</body>
+</html>
